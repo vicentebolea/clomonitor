@@ -46,21 +46,15 @@ import {
 } from './types';
 
 export const FOUNDATIONS: FoundationInfo = {
-  [Foundation.cdf]: {
-    name: 'CDF',
+  'dav-integration': {
+    name: 'DAV Integration',
   },
-  [Foundation.cncf]: {
-    name: 'CNCF',
-  },
-  [Foundation.lfaidata]: {
-    name: 'LF AI & Data',
-  },
-  [Foundation.lfnetworking]: {
-    name: 'LF Networking',
+  'tools-integration': {
+    name: 'Tools Integration',
   },
 };
 
-export const DEFAULT_FOUNDATION = Foundation.cncf;
+export const DEFAULT_FOUNDATION = 'dav-integration' as unknown as Foundation;
 
 export const DEFAULT_SORT_BY = SortBy.Name;
 export const DEFAULT_SORT_DIRECTION = SortDirection.ASC;
@@ -213,24 +207,17 @@ export const QUERIES: SampleQuery[] = [
     },
   },
   {
-    name: 'Projects accepted by CNCF',
+    name: 'DAV Integration projects',
     filters: {
       pageNumber: 1,
-      filters: { foundation: ['cncf'] },
+      filters: { foundation: ['dav-integration'] },
     },
   },
   {
-    name: 'Projects accepted by LF AI & Data',
+    name: 'Tools Integration projects',
     filters: {
       pageNumber: 1,
-      filters: { category: ['lfaidata'] },
-    },
-  },
-  {
-    name: 'Projects accepted by CDF',
-    filters: {
-      pageNumber: 1,
-      filters: { category: ['cdf'] },
+      filters: { foundation: ['tools-integration'] },
     },
   },
 ];
@@ -554,7 +541,7 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
 };
 
 export type FoundationInfo = {
-  [key in Foundation]?: {
+  [key: string]: {
     name: string;
   };
 };
