@@ -47,24 +47,16 @@ const Summary = (props: Props) => {
               <span className="d-inline-block d-md-none d-xl-inline-block ms-1 ms-xl-2">Global</span>
             </th>
             <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
-              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Documentation]}</small>
-              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Documentation</span>
+              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Project]}</small>
+              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Project</span>
             </th>
             <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
-              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.License]}</small>
-              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">License</span>
+              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Source]}</small>
+              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Source</span>
             </th>
             <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
-              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.BestPractices]}</small>
-              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Best Practices</span>
-            </th>
-            <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
-              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Security]}</small>
-              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Security</span>
-            </th>
-            <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
-              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Legal]}</small>
-              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Legal</span>
+              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Build]}</small>
+              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Build</span>
             </th>
           </tr>
         </thead>
@@ -94,28 +86,18 @@ const Summary = (props: Props) => {
                 />
 
                 <BadgeCell
-                  value={!isUndefined(repo.score) ? repo.score.documentation : undefined}
-                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.Documentation}`)}
+                  value={!isUndefined(repo.score) ? repo.score.project : undefined}
+                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.Project}`)}
                 />
 
                 <BadgeCell
-                  value={!isUndefined(repo.score) ? repo.score.license : undefined}
-                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.License}`)}
+                  value={!isUndefined(repo.score) ? repo.score.source : undefined}
+                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.Source}`)}
                 />
 
                 <BadgeCell
-                  value={!isUndefined(repo.score) ? repo.score.best_practices : undefined}
-                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.BestPractices}`)}
-                />
-
-                <BadgeCell
-                  value={!isUndefined(repo.score) ? repo.score.security : undefined}
-                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.Security}`)}
-                />
-
-                <BadgeCell
-                  value={!isUndefined(repo.score) ? repo.score.legal : undefined}
-                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.Legal}`)}
+                  value={!isUndefined(repo.score) ? repo.score.build : undefined}
+                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.Build}`)}
                 />
               </tr>
             );

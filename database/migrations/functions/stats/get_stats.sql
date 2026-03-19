@@ -97,11 +97,9 @@ returns json as $$
                             'all' as maturity,
                             (
                                 select jsonb_build_object(
-                                    'documentation', (average_section_score(p_foundation, 'documentation', null)),
-                                    'license', (average_section_score(p_foundation, 'license', null)),
-                                    'best_practices', (average_section_score(p_foundation, 'best_practices', null)),
-                                    'security', (average_section_score(p_foundation, 'security', null)),
-                                    'legal', (average_section_score(p_foundation, 'legal', null))
+                                    'project', (average_section_score(p_foundation, 'project', null)),
+                                    'source', (average_section_score(p_foundation, 'source', null)),
+                                    'build', (average_section_score(p_foundation, 'build', null))
                                 ) as sections_average
                             )
                         from project
@@ -112,11 +110,9 @@ returns json as $$
                             distinct maturity,
                             (
                                 select jsonb_build_object(
-                                    'documentation', (average_section_score(p_foundation, 'documentation', maturity)),
-                                    'license', (average_section_score(p_foundation, 'license', maturity)),
-                                    'best_practices', (average_section_score(p_foundation, 'best_practices', maturity)),
-                                    'security', (average_section_score(p_foundation, 'security', maturity)),
-                                    'legal', (average_section_score(p_foundation, 'legal', maturity))
+                                    'project', (average_section_score(p_foundation, 'project', maturity)),
+                                    'source', (average_section_score(p_foundation, 'source', maturity)),
+                                    'build', (average_section_score(p_foundation, 'build', maturity))
                                 ) as sections_average
                             )
                         from project
@@ -151,50 +147,18 @@ returns json as $$
         ),
         'repositories', json_build_object(
             'passing_check', json_build_object(
-                'documentation', json_build_object(
-                    'adopters', repositories_passing_check(p_foundation, 'documentation', 'adopters'),
-                    'changelog', repositories_passing_check(p_foundation, 'documentation', 'changelog'),
-                    'code_of_conduct', repositories_passing_check(p_foundation, 'documentation', 'code_of_conduct'),
-                    'contributing', repositories_passing_check(p_foundation, 'documentation', 'contributing'),
-                    'governance', repositories_passing_check(p_foundation, 'documentation', 'governance'),
-                    'maintainers', repositories_passing_check(p_foundation, 'documentation', 'maintainers'),
-                    'readme', repositories_passing_check(p_foundation, 'documentation', 'readme'),
-                    'roadmap', repositories_passing_check(p_foundation, 'documentation', 'roadmap'),
-                    'summary_table', repositories_passing_check(p_foundation, 'documentation', 'summary_table'),
-                    'website', repositories_passing_check(p_foundation, 'documentation', 'website')
+                'project', json_build_object(
+                    'maintained', repositories_passing_check(p_foundation, 'project', 'maintained')
                 ),
-                'license', json_build_object(
-                    'license_approved', repositories_passing_check(p_foundation, 'license', 'license_approved'),
-                    'license_scanning', repositories_passing_check(p_foundation, 'license', 'license_scanning'),
-                    'license_spdx_id', repositories_passing_check(p_foundation, 'license', 'license_spdx_id')
+                'source', json_build_object(
+                    'code_review', repositories_passing_check(p_foundation, 'source', 'code_review'),
+                    'dangerous_workflow', repositories_passing_check(p_foundation, 'source', 'dangerous_workflow'),
+                    'token_permissions', repositories_passing_check(p_foundation, 'source', 'token_permissions')
                 ),
-                'best_practices', json_build_object(
-                    'analytics', repositories_passing_check(p_foundation, 'best_practices', 'analytics'),
-                    'artifacthub_badge', repositories_passing_check(p_foundation, 'best_practices', 'artifacthub_badge'),
-                    'cla', repositories_passing_check(p_foundation, 'best_practices', 'cla'),
-                    'community_meeting', repositories_passing_check(p_foundation, 'best_practices', 'community_meeting'),
-                    'dco', repositories_passing_check(p_foundation, 'best_practices', 'dco'),
-                    'github_discussions', repositories_passing_check(p_foundation, 'best_practices', 'github_discussions'),
-                    'openssf_badge', repositories_passing_check(p_foundation, 'best_practices', 'openssf_badge'),
-                    'openssf_scorecard_badge', repositories_passing_check(p_foundation, 'best_practices', 'openssf_scorecard_badge'),
-                    'recent_release', repositories_passing_check(p_foundation, 'best_practices', 'recent_release'),
-                    'slack_presence', repositories_passing_check(p_foundation, 'best_practices', 'slack_presence')
-                ),
-                'security', json_build_object(
-                    'binary_artifacts', repositories_passing_check(p_foundation, 'security', 'binary_artifacts'),
-                    'code_review', repositories_passing_check(p_foundation, 'security', 'code_review'),
-                    'dangerous_workflow', repositories_passing_check(p_foundation, 'security', 'dangerous_workflow'),
-                    'dependencies_policy', repositories_passing_check(p_foundation, 'security', 'dependencies_policy'),
-                    'dependency_update_tool', repositories_passing_check(p_foundation, 'security', 'dependency_update_tool'),
-                    'maintained', repositories_passing_check(p_foundation, 'security', 'maintained'),
-                    'sbom', repositories_passing_check(p_foundation, 'security', 'sbom'),
-                    'security_insights', repositories_passing_check(p_foundation, 'security', 'security_insights'),
-                    'security_policy', repositories_passing_check(p_foundation, 'security', 'security_policy'),
-                    'signed_releases', repositories_passing_check(p_foundation, 'security', 'signed_releases'),
-                    'token_permissions', repositories_passing_check(p_foundation, 'security', 'token_permissions')
-                ),
-                'legal', json_build_object(
-                    'trademark_disclaimer', repositories_passing_check(p_foundation, 'legal', 'trademark_disclaimer')
+                'build', json_build_object(
+                    'binary_artifacts', repositories_passing_check(p_foundation, 'build', 'binary_artifacts'),
+                    'dependency_update_tool', repositories_passing_check(p_foundation, 'build', 'dependency_update_tool'),
+                    'signed_releases', repositories_passing_check(p_foundation, 'build', 'signed_releases')
                 )
             )
         )

@@ -9,34 +9,22 @@ pub struct Score {
     pub global_weight: usize,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub documentation: Option<f64>,
+    pub project: Option<f64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub documentation_weight: Option<usize>,
+    pub project_weight: Option<usize>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub license: Option<f64>,
+    pub source: Option<f64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub license_weight: Option<usize>,
+    pub source_weight: Option<usize>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub best_practices: Option<f64>,
+    pub build: Option<f64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub best_practices_weight: Option<usize>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub security: Option<f64>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub security_weight: Option<usize>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub legal: Option<f64>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub legal_weight: Option<usize>,
+    pub build_weight: Option<usize>,
 }
 
 impl Score {
@@ -59,40 +47,22 @@ pub fn calculate(report: &Report) -> Score {
     let mut score = Score::default();
 
     // Sections
-    (score.documentation, score.documentation_weight) = calculate_section(
-        &report.documentation.available(),
-        &report.documentation.passed_or_exempt(),
+    (score.project, score.project_weight) = calculate_section(
+        &report.project.available(),
+        &report.project.passed_or_exempt(),
     );
-    (score.license, score.license_weight) = calculate_section(
-        &report.license.available(),
-        &report.license.passed_or_exempt(),
+    (score.source, score.source_weight) = calculate_section(
+        &report.source.available(),
+        &report.source.passed_or_exempt(),
     );
-    (score.best_practices, score.best_practices_weight) = calculate_section(
-        &report.best_practices.available(),
-        &report.best_practices.passed_or_exempt(),
+    (score.build, score.build_weight) = calculate_section(
+        &report.build.available(),
+        &report.build.passed_or_exempt(),
     );
-    (score.security, score.security_weight) = calculate_section(
-        &report.security.available(),
-        &report.security.passed_or_exempt(),
-    );
-    (score.legal, score.legal_weight) =
-        calculate_section(&report.legal.available(), &report.legal.passed_or_exempt());
 
     // Global
-    let sections_scores = &[
-        score.documentation,
-        score.license,
-        score.best_practices,
-        score.security,
-        score.legal,
-    ];
-    let sections_weights = &[
-        score.documentation_weight,
-        score.license_weight,
-        score.best_practices_weight,
-        score.security_weight,
-        score.legal_weight,
-    ];
+    let sections_scores = &[score.project, score.source, score.build];
+    let sections_weights = &[score.project_weight, score.source_weight, score.build_weight];
     score.global_weight = sections_weights
         .iter()
         .fold(0, |gw, sw| gw + sw.unwrap_or_default());
@@ -131,25 +101,17 @@ fn calculate_section(
 /// Merge the scores provided into a single score.
 #[must_use]
 pub fn merge(scores: &[Score]) -> Score {
-    // Sum all scores weights for each of the sections. We'll use them to
-    // calculate the coefficient we'll apply to each of the scores.
     let mut global_weights_sum = 0;
-    let mut documentation_weights_sum = 0;
-    let mut license_weights_sum = 0;
-    let mut best_practices_weights_sum = 0;
-    let mut security_weights_sum = 0;
-    let mut legal_weights_sum = 0;
+    let mut project_weights_sum = 0;
+    let mut source_weights_sum = 0;
+    let mut build_weights_sum = 0;
     for score in scores {
         global_weights_sum += score.global_weight;
-        documentation_weights_sum += score.documentation_weight.unwrap_or_default();
-        license_weights_sum += score.license_weight.unwrap_or_default();
-        best_practices_weights_sum += score.best_practices_weight.unwrap_or_default();
-        security_weights_sum += score.security_weight.unwrap_or_default();
-        legal_weights_sum += score.legal_weight.unwrap_or_default();
+        project_weights_sum += score.project_weight.unwrap_or_default();
+        source_weights_sum += score.source_weight.unwrap_or_default();
+        build_weights_sum += score.build_weight.unwrap_or_default();
     }
 
-    // Helper function that merges a score into the merged value provided after
-    // applying the given coefficient to it.
     let merge = |merged: Option<f64>, score: Option<f64>, k: f64| -> Option<f64> {
         if let Some(v) = score {
             return match merged {
@@ -160,34 +122,23 @@ pub fn merge(scores: &[Score]) -> Score {
         merged
     };
 
-    // Calculate merged score for each of the sections.
     let mut m = Score::default();
     for s in scores {
         m.global += s.global * (s.global_weight as f64 / global_weights_sum as f64);
-        m.documentation = merge(
-            m.documentation,
-            s.documentation,
-            s.documentation_weight.unwrap_or_default() as f64 / documentation_weights_sum as f64,
+        m.project = merge(
+            m.project,
+            s.project,
+            s.project_weight.unwrap_or_default() as f64 / project_weights_sum as f64,
         );
-        m.license = merge(
-            m.license,
-            s.license,
-            s.license_weight.unwrap_or_default() as f64 / license_weights_sum as f64,
+        m.source = merge(
+            m.source,
+            s.source,
+            s.source_weight.unwrap_or_default() as f64 / source_weights_sum as f64,
         );
-        m.best_practices = merge(
-            m.best_practices,
-            s.best_practices,
-            s.best_practices_weight.unwrap_or_default() as f64 / best_practices_weights_sum as f64,
-        );
-        m.security = merge(
-            m.security,
-            s.security,
-            s.security_weight.unwrap_or_default() as f64 / security_weights_sum as f64,
-        );
-        m.legal = merge(
-            m.legal,
-            s.legal,
-            s.legal_weight.unwrap_or_default() as f64 / legal_weights_sum as f64,
+        m.build = merge(
+            m.build,
+            s.build,
+            s.build_weight.unwrap_or_default() as f64 / build_weights_sum as f64,
         );
     }
 
@@ -249,71 +200,33 @@ mod tests {
 
     #[test]
     fn calculate_report_with_all_checks_passed_got_max_score() {
+        // maintained(3) + code_review(3) + dangerous_workflow(2) + token_permissions(1)
+        // + binary_artifacts(2) + dependency_update_tool(2) + signed_releases(2) = 15
         assert_eq!(
             calculate(&Report {
-                documentation: Documentation {
-                    adopters: Some(CheckOutput::passed()),
-                    code_of_conduct: Some(CheckOutput::passed()),
-                    contributing: Some(CheckOutput::passed()),
-                    changelog: Some(CheckOutput::passed()),
-                    governance: Some(CheckOutput::passed()),
-                    maintainers: Some(CheckOutput::passed()),
-                    readme: Some(CheckOutput::passed()),
-                    roadmap: Some(CheckOutput::passed()),
-                    summary_table: Some(CheckOutput::passed()),
-                    website: Some(CheckOutput::passed()),
+                project: Project {
+                    maintained: Some(CheckOutput::passed()),
                 },
-                license: License {
-                    license_approved: Some(CheckOutput::passed()),
-                    license_scanning: Some(
-                        CheckOutput::passed().url(Some("https://license-scanning.url".to_string()))
-                    ),
-                    license_spdx_id: Some(
-                        CheckOutput::passed().value(Some("Apache-2.0".to_string()))
-                    ),
-                },
-                best_practices: BestPractices {
-                    analytics: Some(CheckOutput::passed()),
-                    artifacthub_badge: Some(CheckOutput::exempt()),
-                    cla: Some(CheckOutput::passed()),
-                    community_meeting: Some(CheckOutput::passed()),
-                    dco: Some(CheckOutput::passed()),
-                    github_discussions: Some(CheckOutput::passed()),
-                    openssf_badge: Some(CheckOutput::passed()),
-                    openssf_scorecard_badge: Some(CheckOutput::passed()),
-                    recent_release: Some(CheckOutput::passed()),
-                    slack_presence: Some(CheckOutput::passed()),
-                },
-                security: Security {
-                    binary_artifacts: Some(CheckOutput::passed()),
+                source: Source {
                     code_review: Some(CheckOutput::passed()),
                     dangerous_workflow: Some(CheckOutput::passed()),
-                    dependencies_policy: Some(CheckOutput::passed()),
-                    dependency_update_tool: Some(CheckOutput::passed()),
-                    maintained: Some(CheckOutput::passed()),
-                    sbom: Some(CheckOutput::passed()),
-                    security_insights: Some(CheckOutput::passed()),
-                    security_policy: Some(CheckOutput::passed()),
-                    signed_releases: Some(CheckOutput::passed()),
                     token_permissions: Some(CheckOutput::passed()),
                 },
-                legal: Legal {
-                    trademark_disclaimer: Some(CheckOutput::passed()),
+                build: Build {
+                    binary_artifacts: Some(CheckOutput::passed()),
+                    dependency_update_tool: Some(CheckOutput::passed()),
+                    signed_releases: Some(CheckOutput::passed()),
                 },
             }),
             Score {
                 global: 100.0,
-                global_weight: 96,
-                documentation: Some(99.999_999_999_999_99),
-                documentation_weight: Some(30),
-                license: Some(100.0),
-                license_weight: Some(20),
-                best_practices: Some(99.999_999_999_999_99),
-                best_practices_weight: Some(19),
-                security: Some(100.000_000_000_000_01),
-                security_weight: Some(22),
-                legal: Some(100.0),
-                legal_weight: Some(5),
+                global_weight: 15,
+                project: Some(100.0),
+                project_weight: Some(3),
+                source: Some(100.0),
+                source_weight: Some(6),
+                build: Some(100.0),
+                build_weight: Some(6),
             }
         );
     }
@@ -322,186 +235,29 @@ mod tests {
     fn calculate_report_with_all_checks_non_passed_got_min_score() {
         assert_eq!(
             calculate(&Report {
-                documentation: Documentation {
-                    adopters: Some(CheckOutput::not_passed()),
-                    code_of_conduct: Some(CheckOutput::not_passed()),
-                    contributing: Some(CheckOutput::not_passed()),
-                    changelog: Some(CheckOutput::not_passed()),
-                    governance: Some(CheckOutput::not_passed()),
-                    maintainers: Some(CheckOutput::not_passed()),
-                    readme: Some(CheckOutput::not_passed()),
-                    roadmap: Some(CheckOutput::not_passed()),
-                    summary_table: Some(CheckOutput::not_passed()),
-                    website: Some(CheckOutput::not_passed()),
+                project: Project {
+                    maintained: Some(CheckOutput::not_passed()),
                 },
-                license: License {
-                    license_approved: Some(CheckOutput::not_passed()),
-                    license_scanning: Some(CheckOutput::not_passed()),
-                    license_spdx_id: Some(CheckOutput::not_passed()),
-                },
-                best_practices: BestPractices {
-                    analytics: Some(CheckOutput::not_passed()),
-                    artifacthub_badge: Some(CheckOutput::not_passed()),
-                    cla: Some(CheckOutput::not_passed()),
-                    community_meeting: Some(CheckOutput::not_passed()),
-                    dco: Some(CheckOutput::not_passed()),
-                    github_discussions: Some(CheckOutput::not_passed()),
-                    openssf_badge: Some(CheckOutput::not_passed()),
-                    openssf_scorecard_badge: Some(CheckOutput::not_passed()),
-                    recent_release: Some(CheckOutput::not_passed()),
-                    slack_presence: Some(CheckOutput::not_passed()),
-                },
-                security: Security {
-                    binary_artifacts: Some(CheckOutput::not_passed()),
+                source: Source {
                     code_review: Some(CheckOutput::not_passed()),
                     dangerous_workflow: Some(CheckOutput::not_passed()),
-                    dependencies_policy: Some(CheckOutput::not_passed()),
-                    dependency_update_tool: Some(CheckOutput::not_passed()),
-                    maintained: Some(CheckOutput::not_passed()),
-                    sbom: Some(CheckOutput::not_passed()),
-                    security_insights: Some(CheckOutput::not_passed()),
-                    security_policy: Some(CheckOutput::not_passed()),
-                    signed_releases: Some(CheckOutput::not_passed()),
                     token_permissions: Some(CheckOutput::not_passed()),
                 },
-                legal: Legal {
-                    trademark_disclaimer: Some(CheckOutput::not_passed()),
+                build: Build {
+                    binary_artifacts: Some(CheckOutput::not_passed()),
+                    dependency_update_tool: Some(CheckOutput::not_passed()),
+                    signed_releases: Some(CheckOutput::not_passed()),
                 },
             }),
             Score {
                 global: 0.0,
-                global_weight: 96,
-                documentation: Some(0.0),
-                documentation_weight: Some(30),
-                license: Some(0.0),
-                license_weight: Some(20),
-                best_practices: Some(0.0),
-                best_practices_weight: Some(19),
-                security: Some(0.0),
-                security_weight: Some(22),
-                legal: Some(0.0),
-                legal_weight: Some(5),
-            }
-        );
-    }
-
-    #[test]
-    fn calculate_report_with_some_missing_checks_but_all_passed_got_max_score() {
-        assert_eq!(
-            calculate(&Report {
-                documentation: Documentation {
-                    adopters: None,
-                    code_of_conduct: None,
-                    contributing: Some(CheckOutput::passed()),
-                    changelog: Some(CheckOutput::passed()),
-                    governance: None,
-                    maintainers: Some(CheckOutput::passed()),
-                    readme: Some(CheckOutput::passed()),
-                    roadmap: None,
-                    summary_table: None,
-                    website: None,
-                },
-                license: License {
-                    license_approved: Some(CheckOutput::passed()),
-                    license_scanning: Some(
-                        CheckOutput::passed().url(Some("https://license-scanning.url".to_string()))
-                    ),
-                    license_spdx_id: Some(
-                        CheckOutput::passed().value(Some("Apache-2.0".to_string()))
-                    ),
-                },
-                best_practices: BestPractices {
-                    analytics: Some(CheckOutput::passed()),
-                    artifacthub_badge: Some(CheckOutput::exempt()),
-                    cla: Some(CheckOutput::passed()),
-                    community_meeting: None,
-                    dco: Some(CheckOutput::passed()),
-                    github_discussions: Some(CheckOutput::passed()),
-                    openssf_badge: Some(CheckOutput::passed()),
-                    openssf_scorecard_badge: Some(CheckOutput::passed()),
-                    recent_release: Some(CheckOutput::passed()),
-                    slack_presence: None,
-                },
-                security: Security {
-                    binary_artifacts: Some(CheckOutput::passed()),
-                    code_review: Some(CheckOutput::passed()),
-                    dangerous_workflow: Some(CheckOutput::passed()),
-                    dependencies_policy: Some(CheckOutput::passed()),
-                    dependency_update_tool: Some(CheckOutput::passed()),
-                    maintained: Some(CheckOutput::passed()),
-                    sbom: Some(CheckOutput::passed()),
-                    security_policy: Some(CheckOutput::passed()),
-                    security_insights: Some(CheckOutput::passed()),
-                    signed_releases: Some(CheckOutput::passed()),
-                    token_permissions: Some(CheckOutput::passed()),
-                },
-                legal: Legal {
-                    trademark_disclaimer: None,
-                },
-            }),
-            Score {
-                global: 100.0,
-                global_weight: 76,
-                documentation: Some(100.0),
-                documentation_weight: Some(18),
-                license: Some(100.0),
-                license_weight: Some(20),
-                best_practices: Some(100.0),
-                best_practices_weight: Some(16),
-                security: Some(100.000_000_000_000_01),
-                security_weight: Some(22),
-                legal: None,
-                legal_weight: None,
-            }
-        );
-    }
-
-    #[test]
-    fn merge_scores() {
-        assert_eq!(
-            merge(&[
-                Score {
-                    global: 100.0,
-                    global_weight: 90,
-                    documentation: Some(100.0),
-                    documentation_weight: Some(30),
-                    license: Some(100.0),
-                    license_weight: Some(20),
-                    best_practices: Some(100.0),
-                    best_practices_weight: Some(20),
-                    security: Some(100.0),
-                    security_weight: Some(15),
-                    legal: Some(100.0),
-                    legal_weight: Some(5),
-                },
-                Score {
-                    global: 0.0,
-                    global_weight: 45,
-                    documentation: Some(0.0),
-                    documentation_weight: Some(15),
-                    license: Some(0.0),
-                    license_weight: Some(10),
-                    best_practices: Some(0.0),
-                    best_practices_weight: Some(10),
-                    security: Some(0.0),
-                    security_weight: Some(10),
-                    legal: None,
-                    legal_weight: None,
-                }
-            ],),
-            Score {
-                global: 66.666_666_666_666_66,
-                global_weight: 0,
-                documentation: Some(66.666_666_666_666_66),
-                documentation_weight: None,
-                license: Some(66.666_666_666_666_66),
-                license_weight: None,
-                best_practices: Some(66.666_666_666_666_66),
-                best_practices_weight: None,
-                security: Some(60.0),
-                security_weight: None,
-                legal: Some(100.0),
-                legal_weight: None,
+                global_weight: 15,
+                project: Some(0.0),
+                project_weight: Some(3),
+                source: Some(0.0),
+                source_weight: Some(6),
+                build: Some(0.0),
+                build_weight: Some(6),
             }
         );
     }

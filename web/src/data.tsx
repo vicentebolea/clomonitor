@@ -223,21 +223,17 @@ export const QUERIES: SampleQuery[] = [
 ];
 
 export const CATEGORY_ICONS = {
-  [ScoreType.BestPractices]: <RiShieldStarLine />,
-  [ScoreType.Documentation]: <HiOutlinePencilAlt />,
+  [ScoreType.Build]: <FaTools />,
   [ScoreType.Global]: <BiTrophy />,
-  [ScoreType.Legal]: <GoLaw />,
-  [ScoreType.License]: <IoMdRibbon />,
-  [ScoreType.Security]: <BiLock />,
+  [ScoreType.Project]: <BiMedal />,
+  [ScoreType.Source]: <MdPreview />,
 };
 
 export const CATEGORY_NAMES = {
-  [ScoreType.BestPractices]: 'Best Practices',
-  [ScoreType.Documentation]: 'Documentation',
+  [ScoreType.Build]: 'Build',
   [ScoreType.Global]: 'Global',
-  [ScoreType.Legal]: 'Legal',
-  [ScoreType.License]: 'License',
-  [ScoreType.Security]: 'Security',
+  [ScoreType.Project]: 'Project',
+  [ScoreType.Source]: 'Source',
 };
 
 export const FILTER_CATEGORY_NAMES = {
@@ -547,42 +543,15 @@ export type FoundationInfo = {
 };
 
 export const CHECKS_PER_CATEGORY: ChecksPerCategory = {
-  [ScoreType.Documentation]: [
-    ReportOption.Adopters,
-    ReportOption.Changelog,
-    ReportOption.CodeOfConduct,
-    ReportOption.Contributing,
-    ReportOption.Governance,
-    ReportOption.Maintainers,
-    ReportOption.Readme,
-    ReportOption.Roadmap,
-    ReportOption.SummaryTable,
-    ReportOption.Website,
-  ],
-  [ScoreType.License]: [ReportOption.SPDX, ReportOption.ApprovedLicense, ReportOption.LicenseScanning],
-  [ScoreType.BestPractices]: [
-    ReportOption.Analytics,
-    ReportOption.ArtifactHubBadge,
-    ReportOption.CLA,
-    ReportOption.CommunityMeeting,
-    ReportOption.DCO,
-    ReportOption.GithubDiscussions,
-    ReportOption.OpenSSFBadge,
-    ReportOption.OpenSSFScorecardBadge,
-    ReportOption.RecentRelease,
-    ReportOption.SlackPresence,
-  ],
-  [ScoreType.Security]: [
-    ReportOption.BinaryArtifacts,
+  [ScoreType.Project]: [ReportOption.Maintained],
+  [ScoreType.Source]: [
     ReportOption.CodeReview,
     ReportOption.DangerousWorkflow,
-    ReportOption.DependencyUpdateTool,
-    ReportOption.Maintained,
-    ReportOption.SBOM,
-    ReportOption.SecurityInsights,
-    ReportOption.SecurityPolicy,
-    ReportOption.SignedReleases,
     ReportOption.TokenPermissions,
   ],
-  [ScoreType.Legal]: [ReportOption.TrademarkDisclaimer],
+  [ScoreType.Build]: [
+    ReportOption.BinaryArtifacts,
+    ReportOption.DependencyUpdateTool,
+    ReportOption.SignedReleases,
+  ],
 };

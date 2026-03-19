@@ -109,67 +109,20 @@ impl Linter for CoreLinter {
         // Prepare check input
         let ci = CheckInput::new(li).await?;
 
-        // Run some async checks concurrently
-        let (analytics, contributing, summary_table, trademark_disclaimer) = tokio::join!(
-            run_async!(analytics, &ci),
-            run_async!(contributing, &ci),
-            run_async!(summary_table, &ci),
-            run_async!(trademark_disclaimer, &ci),
-        );
-
-        // Run some sync checks needed in advance
-        let spdx_id = run!(license_spdx_id, &ci);
-        let mut spdx_id_value: Option<String> = None;
-        if let Some(r) = &spdx_id {
-            spdx_id_value.clone_from(&r.value);
-        }
-
-        // Run the remaining sync checks and build report
+        // Run OpenSSF Scorecard checks and build report
         let mut report = Report {
-            documentation: Documentation {
-                adopters: run!(adopters, &ci),
-                changelog: run!(changelog, &ci),
-                code_of_conduct: run!(code_of_conduct, &ci),
-                contributing,
-                governance: run!(governance, &ci),
-                maintainers: run!(maintainers, &ci),
-                readme: run!(readme, &ci),
-                roadmap: run!(roadmap, &ci),
-                summary_table,
-                website: run!(website, &ci),
+            project: Project {
+                maintained: run!(maintained, &ci),
             },
-            license: License {
-                license_approved: license_approved::check(&ci, spdx_id_value),
-                license_scanning: run!(license_scanning, &ci),
-                license_spdx_id: spdx_id,
-            },
-            best_practices: BestPractices {
-                analytics,
-                artifacthub_badge: run!(artifacthub_badge, &ci),
-                cla: run!(cla, &ci),
-                community_meeting: run!(community_meeting, &ci),
-                dco: run!(dco, &ci),
-                github_discussions: run!(github_discussions, &ci),
-                openssf_badge: run!(openssf_badge, &ci),
-                openssf_scorecard_badge: run!(openssf_scorecard_badge, &ci),
-                recent_release: run!(recent_release, &ci),
-                slack_presence: run!(slack_presence, &ci),
-            },
-            security: Security {
-                binary_artifacts: run!(binary_artifacts, &ci),
+            source: Source {
                 code_review: run!(code_review, &ci),
                 dangerous_workflow: run!(dangerous_workflow, &ci),
-                dependencies_policy: run!(dependencies_policy, &ci),
-                dependency_update_tool: run!(dependency_update_tool, &ci),
-                maintained: run!(maintained, &ci),
-                sbom: run!(sbom, &ci),
-                security_insights: run!(security_insights, &ci),
-                security_policy: run!(security_policy, &ci),
-                signed_releases: run!(signed_releases, &ci),
                 token_permissions: run!(token_permissions, &ci),
             },
-            legal: Legal {
-                trademark_disclaimer,
+            build: Build {
+                binary_artifacts: run!(binary_artifacts, &ci),
+                dependency_update_tool: run!(dependency_update_tool, &ci),
+                signed_releases: run!(signed_releases, &ci),
             },
         };
         report.apply_exemptions();

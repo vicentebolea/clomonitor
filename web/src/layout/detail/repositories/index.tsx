@@ -169,77 +169,34 @@ const RepositoriesList = (props: Props) => {
                   <Row
                     repoName={repo.name}
                     reportId={repo.report.report_id}
-                    name={ScoreType.Documentation}
-                    label="Documentation"
-                    data={repo.report.data.documentation}
-                    icon={CATEGORY_ICONS[ScoreType.Documentation]}
-                    score={!isUndefined(repo.score) ? repo.score.documentation : undefined}
-                    referenceUrl="/docs/topics/checks/#documentation"
-                    recommendedTemplates={
-                      checkSets.includes(CheckSet.Community)
-                        ? [
-                            {
-                              name: 'CONTRIBUTING.md',
-                              url: 'https://github.com/cncf/project-template/blob/main/CONTRIBUTING.md',
-                            },
-                            {
-                              name: 'GOVERNANCE.md',
-                              url: 'https://github.com/cncf/project-template/blob/main/GOVERNANCE.md',
-                            },
-                          ]
-                        : undefined
-                    }
+                    name={ScoreType.Project}
+                    label="Project"
+                    data={repo.report.data.project}
+                    icon={CATEGORY_ICONS[ScoreType.Project]}
+                    score={!isUndefined(repo.score) ? repo.score.project : undefined}
+                    referenceUrl="https://scorecard.dev/"
                     getAnchorLink={getAnchorLink}
                   />
                   <Row
                     repoName={repo.name}
                     reportId={repo.report.report_id}
-                    name={ScoreType.License}
-                    label="License"
-                    data={repo.report.data.license}
-                    icon={CATEGORY_ICONS[ScoreType.License]}
-                    score={!isUndefined(repo.score) ? repo.score.license : undefined}
-                    referenceUrl="/docs/topics/checks/#license"
+                    name={ScoreType.Source}
+                    label="Source"
+                    data={repo.report.data.source}
+                    icon={CATEGORY_ICONS[ScoreType.Source]}
+                    score={!isUndefined(repo.score) ? repo.score.source : undefined}
+                    referenceUrl="https://scorecard.dev/"
                     getAnchorLink={getAnchorLink}
                   />
                   <Row
                     repoName={repo.name}
                     reportId={repo.report.report_id}
-                    name={ScoreType.BestPractices}
-                    label="Best Practices"
-                    data={repo.report.data.best_practices}
-                    icon={CATEGORY_ICONS[ScoreType.BestPractices]}
-                    score={!isUndefined(repo.score) ? repo.score.best_practices : undefined}
-                    referenceUrl="/docs/topics/checks/#best-practices"
-                    getAnchorLink={getAnchorLink}
-                    repoUrl={repo.url}
-                  />
-                  <Row
-                    repoName={repo.name}
-                    reportId={repo.report.report_id}
-                    name={ScoreType.Security}
-                    label="Security"
-                    data={repo.report.data.security}
-                    icon={CATEGORY_ICONS[ScoreType.Security]}
-                    score={!isUndefined(repo.score) ? repo.score.security : undefined}
-                    referenceUrl="/docs/topics/checks/#security"
-                    recommendedTemplates={[
-                      {
-                        name: 'SECURITY.md',
-                        url: 'https://github.com/cncf/tag-security/blob/main/community/resources/project-resources/templates/SECURITY.md',
-                      },
-                    ]}
-                    getAnchorLink={getAnchorLink}
-                  />
-                  <Row
-                    repoName={repo.name}
-                    reportId={repo.report.report_id}
-                    name={ScoreType.Legal}
-                    label="Legal"
-                    data={repo.report.data.legal}
-                    icon={CATEGORY_ICONS[ScoreType.Legal]}
-                    score={!isUndefined(repo.score) ? repo.score.legal : undefined}
-                    referenceUrl="/docs/topics/checks/#legal"
+                    name={ScoreType.Build}
+                    label="Build"
+                    data={repo.report.data.build}
+                    icon={CATEGORY_ICONS[ScoreType.Build]}
+                    score={!isUndefined(repo.score) ? repo.score.build : undefined}
+                    referenceUrl="https://scorecard.dev/"
                     getAnchorLink={getAnchorLink}
                   />
                 </>

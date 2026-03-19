@@ -971,28 +971,18 @@ const StatsView = () => {
                               <div className={`card-body ${styles.checksBody}`}>
                                 <div className="row g-4 justify-content-center">
                                   <Checks
-                                    title="Documentation"
-                                    data={stats.repositories.passing_check.documentation}
+                                    title="Project"
+                                    data={stats.repositories.passing_check.project}
                                     onSelectCheck={selectCheck}
                                   />
                                   <Checks
-                                    title="License"
-                                    data={stats.repositories.passing_check.license}
+                                    title="Source"
+                                    data={stats.repositories.passing_check.source}
                                     onSelectCheck={selectCheck}
                                   />
                                   <Checks
-                                    title="Best Practices"
-                                    data={stats.repositories.passing_check.best_practices}
-                                    onSelectCheck={selectCheck}
-                                  />
-                                  <Checks
-                                    title="Security"
-                                    data={stats.repositories.passing_check.security}
-                                    onSelectCheck={selectCheck}
-                                  />
-                                  <Checks
-                                    title="Legal"
-                                    data={stats.repositories.passing_check.legal}
+                                    title="Build"
+                                    data={stats.repositories.passing_check.build}
                                     onSelectCheck={selectCheck}
                                   />
                                 </div>

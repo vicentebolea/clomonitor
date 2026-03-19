@@ -126,12 +126,10 @@ export enum FilterKind {
 }
 
 export enum ScoreType {
-  BestPractices = 'best_practices',
-  Documentation = 'documentation',
+  Build = 'build',
   Global = 'global',
-  Legal = 'legal',
-  License = 'license',
-  Security = 'security',
+  Project = 'project',
+  Source = 'source',
 }
 
 export enum SortDirection {
