@@ -73,7 +73,7 @@ impl CheckInput<'_> {
 }
 
 /// Check output information.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CheckOutput<T = ()> {
     pub passed: bool,
 
@@ -95,6 +95,10 @@ pub struct CheckOutput<T = ()> {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fail_reason: Option<String>,
+
+    /// Raw OpenSSF Scorecard score (0-10). Used for proportional scoring.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scorecard_score: Option<f64>,
 }
 
 impl<T> CheckOutput<T> {
@@ -181,6 +185,7 @@ impl<T> Default for CheckOutput<T> {
             exemption_reason: None,
             failed: false,
             fail_reason: None,
+            scorecard_score: None,
         }
     }
 }
@@ -203,13 +208,14 @@ impl<T> From<Result<Option<&ScorecardCheck>, &Error>> for CheckOutput<T> {
                         n if n == signed_releases => 1.0,
                         _ => 5.0,
                     };
-                    if sc_check.score >= pass_threshold {
+                    if sc_check.score > pass_threshold {
                         output.passed = true;
                     }
+                    output.scorecard_score = Some(sc_check.score);
                     output.details = Some(format!(
                         r"# {} OpenSSF Scorecard check
 
-**Score**: {} (check passes with score >= {})
+**Score**: {} (check passes with score > {})
 
 **Reason**: {}
 
@@ -326,7 +332,8 @@ mod tests {
             CheckOutput::<()>::from(Ok(Some(&sc_check))),
             CheckOutput {
                 passed: true,
-                details: Some("# Code-Review OpenSSF Scorecard check\n\n**Score**: 8 (check passes with score >= 5)\n\n**Reason**: reason\n\n**Details**: \n\n>details\n\n**Please see the [check documentation](https://test.url) in the ossf/scorecard repository for more details**".to_string()),
+                scorecard_score: Some(8.0),
+                details: Some("# Code-Review OpenSSF Scorecard check\n\n**Score**: 8 (check passes with score > 5)\n\n**Reason**: reason\n\n**Details**: \n\n>details\n\n**Please see the [check documentation](https://test.url) in the ossf/scorecard repository for more details**".to_string()),
                 ..Default::default()
             }
         );
@@ -348,7 +355,8 @@ mod tests {
             CheckOutput::<()>::from(Ok(Some(&sc_check))),
             CheckOutput {
                 passed: false,
-                details: Some("# Code-Review OpenSSF Scorecard check\n\n**Score**: 4 (check passes with score >= 5)\n\n**Reason**: reason\n\n**Details**: \n\n>details\n\n**Please see the [check documentation](https://test.url) in the ossf/scorecard repository for more details**".to_string()),
+                scorecard_score: Some(4.0),
+                details: Some("# Code-Review OpenSSF Scorecard check\n\n**Score**: 4 (check passes with score > 5)\n\n**Reason**: reason\n\n**Details**: \n\n>details\n\n**Please see the [check documentation](https://test.url) in the ossf/scorecard repository for more details**".to_string()),
                 ..Default::default()
             }
         );

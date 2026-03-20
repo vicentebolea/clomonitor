@@ -126,10 +126,12 @@ export enum FilterKind {
 }
 
 export enum ScoreType {
+  CodeVulnerabilities = 'code_vulnerabilities',
+  Maintenance = 'maintenance',
+  Testing = 'testing',
+  Source = 'source',
   Build = 'build',
   Global = 'global',
-  Project = 'project',
-  Source = 'source',
 }
 
 export enum SortDirection {

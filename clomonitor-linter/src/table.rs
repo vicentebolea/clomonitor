@@ -52,16 +52,25 @@ pub(crate) fn display(
         .set_header(vec![cell_header("Section"), cell_header("Score")])
         .add_row(vec![cell_entry("Global"), cell_score(Some(score.global))])
         .add_row(vec![
-            cell_entry("Documentation"),
-            cell_score(score.documentation),
+            cell_entry("Code Vulnerabilities"),
+            cell_score(score.code_vulnerabilities),
         ])
-        .add_row(vec![cell_entry("License"), cell_score(score.license)])
         .add_row(vec![
-            cell_entry("Best practices"),
-            cell_score(score.best_practices),
+            cell_entry("Maintenance"),
+            cell_score(score.maintenance),
         ])
-        .add_row(vec![cell_entry("Security"), cell_score(score.security)])
-        .add_row(vec![cell_entry("Legal"), cell_score(score.legal)]);
+        .add_row(vec![
+            cell_entry("Continuous Testing"),
+            cell_score(score.testing),
+        ])
+        .add_row(vec![
+            cell_entry("Source Risk"),
+            cell_score(score.source),
+        ])
+        .add_row(vec![
+            cell_entry("Build Risk"),
+            cell_score(score.build),
+        ]);
     writeln!(w, "{score_summary}\n")?;
 
     // Checks table
@@ -72,163 +81,76 @@ pub(crate) fn display(
         .apply_modifier(UTF8_ROUND_CORNERS)
         .set_header(vec![cell_header("Check"), cell_header("Passed")])
         .add_row(vec![
-            cell_entry("Documentation / Adopters"),
-            cell_check(report.documentation.adopters.as_ref()),
+            cell_entry("Code Vulnerabilities / Vulnerabilities"),
+            cell_check(report.code_vulnerabilities.vulnerabilities.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Documentation / Changelog"),
-            cell_check(report.documentation.changelog.as_ref()),
+            cell_entry("Maintenance / Dependency update tool"),
+            cell_check(report.maintenance.dependency_update_tool.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Documentation / Code of conduct"),
-            cell_check(report.documentation.code_of_conduct.as_ref()),
+            cell_entry("Maintenance / Maintained"),
+            cell_check(report.maintenance.maintained.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Documentation / Contributing"),
-            cell_check(report.documentation.contributing.as_ref()),
+            cell_entry("Maintenance / Security policy"),
+            cell_check(report.maintenance.security_policy_sc.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Documentation / Governance"),
-            cell_check(report.documentation.governance.as_ref()),
+            cell_entry("Maintenance / License"),
+            cell_check(report.maintenance.license_sc.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Documentation / Maintainers"),
-            cell_check(report.documentation.maintainers.as_ref()),
+            cell_entry("Maintenance / CII Best Practices"),
+            cell_check(report.maintenance.cii_best_practices.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Documentation / Readme"),
-            cell_check(report.documentation.readme.as_ref()),
+            cell_entry("Continuous Testing / CI tests"),
+            cell_check(report.testing.ci_tests.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Documentation / Roadmap"),
-            cell_check(report.documentation.roadmap.as_ref()),
+            cell_entry("Continuous Testing / Fuzzing"),
+            cell_check(report.testing.fuzzing.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Documentation / Summary table"),
-            cell_check(report.documentation.summary_table.as_ref()),
+            cell_entry("Continuous Testing / SAST"),
+            cell_check(report.testing.sast.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Documentation / Website"),
-            cell_check(report.documentation.website.as_ref()),
+            cell_entry("Source Risk / Binary artifacts"),
+            cell_check(report.source.binary_artifacts.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("License"),
-            Cell::new(match &report.license.license_spdx_id {
-                None => NOT_APPLICABLE_MSG.to_string(),
-                Some(r) => r
-                    .value
-                    .clone()
-                    .unwrap_or_else(|| "Not detected".to_string()),
-            })
-            .set_alignment(CellAlignment::Center)
-            .add_attribute(Attribute::Bold),
+            cell_entry("Source Risk / Branch protection"),
+            cell_check(report.source.branch_protection.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("License / Approved"),
-            cell_check(report.license.license_approved.as_ref()),
+            cell_entry("Source Risk / Dangerous workflow"),
+            cell_check(report.source.dangerous_workflow.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("License / Scanning"),
-            cell_check(report.license.license_scanning.as_ref()),
+            cell_entry("Source Risk / Code review"),
+            cell_check(report.source.code_review.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Best practices / Analytics"),
-            if let Some(value) = report
-                .best_practices
-                .analytics
-                .as_ref()
-                .and_then(|analytics| analytics.value.as_ref())
-            {
-                Cell::new(value.join(" · "))
-                    .set_alignment(CellAlignment::Center)
-                    .add_attribute(Attribute::Bold)
-            } else {
-                cell_check(report.best_practices.analytics.as_ref())
-            },
+            cell_entry("Source Risk / Contributors"),
+            cell_check(report.source.contributors_sc.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Best practices / Artifact Hub badge"),
-            cell_check(report.best_practices.artifacthub_badge.as_ref()),
+            cell_entry("Build Risk / Pinned dependencies"),
+            cell_check(report.build.pinned_dependencies.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Best practices / CLA"),
-            cell_check(report.best_practices.cla.as_ref()),
+            cell_entry("Build Risk / Token permissions"),
+            cell_check(report.build.token_permissions.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Best practices / Community meeting"),
-            cell_check(report.best_practices.community_meeting.as_ref()),
+            cell_entry("Build Risk / Packaging"),
+            cell_check(report.build.packaging.as_ref()),
         ])
         .add_row(vec![
-            cell_entry("Best practices / DCO"),
-            cell_check(report.best_practices.dco.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Best practices / GitHub discussions"),
-            cell_check(report.best_practices.github_discussions.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Best practices / OpenSSF best practices badge"),
-            cell_check(report.best_practices.openssf_badge.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Best practices / OpenSSF Scorecard badge"),
-            cell_check(report.best_practices.openssf_scorecard_badge.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Best practices / Recent release"),
-            cell_check(report.best_practices.recent_release.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Best practices / Slack presence"),
-            cell_check(report.best_practices.slack_presence.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Binary artifacts"),
-            cell_check(report.security.binary_artifacts.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Code review"),
-            cell_check(report.security.code_review.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Dangerous workflow"),
-            cell_check(report.security.dangerous_workflow.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Dependencies policy"),
-            cell_check(report.security.dependencies_policy.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Dependency update tool"),
-            cell_check(report.security.dependency_update_tool.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Maintained"),
-            cell_check(report.security.maintained.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / SBOM"),
-            cell_check(report.security.sbom.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Security insights"),
-            cell_check(report.security.security_insights.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Security policy"),
-            cell_check(report.security.security_policy.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Signed release"),
-            cell_check(report.security.signed_releases.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Security / Token permissions"),
-            cell_check(report.security.token_permissions.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Legal / Trademark disclaimer"),
-            cell_check(report.legal.trademark_disclaimer.as_ref()),
+            cell_entry("Build Risk / Signed releases"),
+            cell_check(report.build.signed_releases.as_ref()),
         ]);
     writeln!(w, "{checks_summary}\n")?;
 
@@ -313,11 +235,12 @@ fn cell_check<T>(output: Option<&CheckOutput<T>>) -> Cell {
 
 #[cfg(test)]
 mod tests {
-    use std::{fs, path::PathBuf, str, str::FromStr};
+    use std::{path::PathBuf, str, str::FromStr};
 
     use clomonitor_core::{
         linter::{
-            BestPractices, CheckOutput, CheckSet, Documentation, Legal, License, Report, Security,
+            BuildRisk, CheckOutput, CheckSet, CodeVulnerabilities, ContinuousTesting, Maintenance,
+            Report, SourceRisk,
         },
         score::Score,
     };
@@ -330,72 +253,53 @@ mod tests {
     fn display_prints_results() {
         // Setup test linter results
         let report = Report {
-            documentation: Documentation {
-                adopters: Some(CheckOutput::passed()),
-                code_of_conduct: Some(CheckOutput::passed()),
-                contributing: Some(CheckOutput::passed()),
-                changelog: Some(CheckOutput::passed()),
-                governance: Some(CheckOutput::passed()),
-                maintainers: Some(CheckOutput::passed()),
-                readme: Some(CheckOutput::passed()),
-                roadmap: Some(CheckOutput::passed()),
-                summary_table: Some(CheckOutput::passed()),
-                website: Some(CheckOutput::passed()),
+            code_vulnerabilities: CodeVulnerabilities {
+                vulnerabilities: Some(CheckOutput::passed()),
             },
-            license: License {
-                license_approved: Some(CheckOutput::passed()),
-                license_scanning: Some(
-                    CheckOutput::passed().url(Some("https://license-scanning.url".to_string())),
-                ),
-                license_spdx_id: Some(CheckOutput::passed().value(Some("Apache-2.0".to_string()))),
-            },
-            best_practices: BestPractices {
-                analytics: Some(CheckOutput::passed().value(Some(vec!["GA4".to_string()]))),
-                artifacthub_badge: Some(CheckOutput::exempt()),
-                cla: Some(CheckOutput::passed()),
-                community_meeting: Some(CheckOutput::passed()),
-                dco: Some(CheckOutput::passed()),
-                github_discussions: Some(CheckOutput::passed()),
-                openssf_badge: Some(CheckOutput::passed()),
-                openssf_scorecard_badge: Some(CheckOutput::passed()),
-                recent_release: Some(CheckOutput::passed()),
-                slack_presence: Some(CheckOutput::passed()),
-            },
-            security: Security {
-                binary_artifacts: Some(CheckOutput::passed()),
-                code_review: Some(CheckOutput::passed()),
-                dangerous_workflow: Some(CheckOutput::passed()),
-                dependencies_policy: Some(CheckOutput::passed()),
+            maintenance: Maintenance {
                 dependency_update_tool: Some(CheckOutput::passed()),
                 maintained: Some(CheckOutput::passed()),
-                sbom: Some(CheckOutput::passed()),
-                security_insights: Some(CheckOutput::passed()),
-                security_policy: Some(CheckOutput::passed()),
-                signed_releases: Some(CheckOutput::passed()),
-                token_permissions: Some(CheckOutput::passed()),
+                security_policy_sc: Some(CheckOutput::passed()),
+                license_sc: Some(CheckOutput::passed()),
+                cii_best_practices: Some(CheckOutput::passed()),
             },
-            legal: Legal {
-                trademark_disclaimer: Some(CheckOutput::passed()),
+            testing: ContinuousTesting {
+                ci_tests: Some(CheckOutput::passed()),
+                fuzzing: Some(CheckOutput::passed()),
+                sast: Some(CheckOutput::passed()),
+            },
+            source: SourceRisk {
+                binary_artifacts: Some(CheckOutput::passed()),
+                branch_protection: Some(CheckOutput::passed()),
+                dangerous_workflow: Some(CheckOutput::passed()),
+                code_review: Some(CheckOutput::passed()),
+                contributors_sc: Some(CheckOutput::passed()),
+            },
+            build: BuildRisk {
+                pinned_dependencies: Some(CheckOutput::passed()),
+                token_permissions: Some(CheckOutput::passed()),
+                packaging: Some(CheckOutput::passed()),
+                signed_releases: Some(CheckOutput::passed()),
             },
         };
         let score = Score {
             global: 99.999_999_999_999_99,
-            global_weight: 5,
-            documentation: Some(100.0),
-            documentation_weight: Some(1),
-            license: Some(100.0),
-            license_weight: Some(1),
-            best_practices: Some(100.0),
-            best_practices_weight: Some(1),
-            security: Some(100.0),
-            security_weight: Some(1),
-            legal: Some(100.0),
-            legal_weight: Some(1),
+            global_weight: 18,
+            code_vulnerabilities: Some(100.0),
+            code_vulnerabilities_weight: Some(1),
+            maintenance: Some(100.0),
+            maintenance_weight: Some(5),
+            testing: Some(100.0),
+            testing_weight: Some(3),
+            source: Some(100.0),
+            source_weight: Some(5),
+            build: Some(100.0),
+            build_weight: Some(4),
         };
         let args = Args {
             path: PathBuf::from_str("test-repo-path").unwrap(),
             url: "https://github.com/test-org/test-repo".to_string(),
-            check_set: vec![CheckSet::Code, CheckSet::Community],
+            check_set: vec![CheckSet::Code],
             pass_score: 80.0,
             format: Format::Table,
         };
@@ -411,7 +315,7 @@ mod tests {
 
         // Check output matches golden file content
         let output = str::from_utf8(w.as_slice()).unwrap();
-        let golden = fs::read_to_string(golden_path).unwrap();
+        let golden = std::fs::read_to_string(golden_path).unwrap();
         assert_eq!(output, golden);
     }
 }

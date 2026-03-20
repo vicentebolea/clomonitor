@@ -223,17 +223,21 @@ export const QUERIES: SampleQuery[] = [
 ];
 
 export const CATEGORY_ICONS = {
+  [ScoreType.CodeVulnerabilities]: <BiShieldQuarter />,
+  [ScoreType.Maintenance]: <FaUserCog />,
+  [ScoreType.Testing]: <FaCheckDouble />,
+  [ScoreType.Source]: <MdPreview />,
   [ScoreType.Build]: <FaTools />,
   [ScoreType.Global]: <BiTrophy />,
-  [ScoreType.Project]: <BiMedal />,
-  [ScoreType.Source]: <MdPreview />,
 };
 
 export const CATEGORY_NAMES = {
-  [ScoreType.Build]: 'Build',
+  [ScoreType.CodeVulnerabilities]: 'Code Vulnerabilities',
+  [ScoreType.Maintenance]: 'Maintenance',
+  [ScoreType.Testing]: 'Continuous Testing',
+  [ScoreType.Source]: 'Source Risk',
+  [ScoreType.Build]: 'Build Risk',
   [ScoreType.Global]: 'Global',
-  [ScoreType.Project]: 'Project',
-  [ScoreType.Source]: 'Source',
 };
 
 export const FILTER_CATEGORY_NAMES = {
@@ -609,29 +613,32 @@ export type FoundationInfo = {
 };
 
 export const CHECKS_PER_CATEGORY: ChecksPerCategory = {
-  [ScoreType.Project]: [
-    ReportOption.Maintained,
-    ReportOption.Contributors,
-    ReportOption.CIIBestPractices,
-    ReportOption.SecurityPolicy,
-    ReportOption.License,
-  ],
-  [ScoreType.Source]: [
-    ReportOption.CodeReview,
-    ReportOption.BinaryArtifacts,
-    ReportOption.DangerousWorkflow,
-    ReportOption.SAST,
+  [ScoreType.CodeVulnerabilities]: [
     ReportOption.Vulnerabilities,
   ],
-  [ScoreType.Build]: [
-    ReportOption.BranchProtection,
-    ReportOption.CiTests,
+  [ScoreType.Maintenance]: [
     ReportOption.DependencyUpdateTool,
+    ReportOption.Maintained,
+    ReportOption.SecurityPolicy,
+    ReportOption.License,
+    ReportOption.CIIBestPractices,
+  ],
+  [ScoreType.Testing]: [
+    ReportOption.CiTests,
     ReportOption.Fuzzing,
+    ReportOption.SAST,
+  ],
+  [ScoreType.Source]: [
+    ReportOption.BinaryArtifacts,
+    ReportOption.BranchProtection,
+    ReportOption.DangerousWorkflow,
+    ReportOption.CodeReview,
+    ReportOption.Contributors,
+  ],
+  [ScoreType.Build]: [
     ReportOption.PinnedDependencies,
-    ReportOption.SignedReleases,
     ReportOption.TokenPermissions,
     ReportOption.Packaging,
-    ReportOption.SBOM,
+    ReportOption.SignedReleases,
   ],
 };

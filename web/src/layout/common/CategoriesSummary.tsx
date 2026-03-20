@@ -48,15 +48,31 @@ const CategoriesSummary = (props: Props) => {
       >
         <div className={classNames('row', { 'gx-4 gx-md-5': props.bigSize })}>
           <CategoryProgressbar
-            name="Project"
-            value={props.score.project}
-            icon={CATEGORY_ICONS[ScoreType.Project]}
+            name="Code Vulnerabilities"
+            value={props.score.code_vulnerabilities}
+            icon={CATEGORY_ICONS[ScoreType.CodeVulnerabilities]}
             bigSize={props.bigSize}
-            linkTo={activeLink ? `${props.repoName}_${ScoreType.Project}` : undefined}
+            linkTo={activeLink ? `${props.repoName}_${ScoreType.CodeVulnerabilities}` : undefined}
             scrollIntoView={activeLink ? props.scrollIntoView : undefined}
           />
           <CategoryProgressbar
-            name="Source"
+            name="Maintenance"
+            value={props.score.maintenance}
+            icon={CATEGORY_ICONS[ScoreType.Maintenance]}
+            bigSize={props.bigSize}
+            linkTo={activeLink ? `${props.repoName}_${ScoreType.Maintenance}` : undefined}
+            scrollIntoView={activeLink ? props.scrollIntoView : undefined}
+          />
+          <CategoryProgressbar
+            name="Continuous Testing"
+            value={props.score.testing}
+            icon={CATEGORY_ICONS[ScoreType.Testing]}
+            bigSize={props.bigSize}
+            linkTo={activeLink ? `${props.repoName}_${ScoreType.Testing}` : undefined}
+            scrollIntoView={activeLink ? props.scrollIntoView : undefined}
+          />
+          <CategoryProgressbar
+            name="Source Risk"
             value={props.score.source}
             icon={CATEGORY_ICONS[ScoreType.Source]}
             bigSize={props.bigSize}
@@ -64,7 +80,7 @@ const CategoriesSummary = (props: Props) => {
             scrollIntoView={activeLink ? props.scrollIntoView : undefined}
           />
           <CategoryProgressbar
-            name="Build"
+            name="Build Risk"
             value={props.score.build}
             icon={CATEGORY_ICONS[ScoreType.Build]}
             bigSize={props.bigSize}

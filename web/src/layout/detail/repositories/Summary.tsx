@@ -47,16 +47,24 @@ const Summary = (props: Props) => {
               <span className="d-inline-block d-md-none d-xl-inline-block ms-1 ms-xl-2">Global</span>
             </th>
             <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
-              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Project]}</small>
-              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Project</span>
+              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.CodeVulnerabilities]}</small>
+              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Code Vuln.</span>
+            </th>
+            <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
+              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Maintenance]}</small>
+              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Maintenance</span>
+            </th>
+            <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
+              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Testing]}</small>
+              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Testing</span>
             </th>
             <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
               <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Source]}</small>
-              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Source</span>
+              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Source Risk</span>
             </th>
             <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
               <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.Build]}</small>
-              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Build</span>
+              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Build Risk</span>
             </th>
           </tr>
         </thead>
@@ -86,8 +94,18 @@ const Summary = (props: Props) => {
                 />
 
                 <BadgeCell
-                  value={!isUndefined(repo.score) ? repo.score.project : undefined}
-                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.Project}`)}
+                  value={!isUndefined(repo.score) ? repo.score.code_vulnerabilities : undefined}
+                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.CodeVulnerabilities}`)}
+                />
+
+                <BadgeCell
+                  value={!isUndefined(repo.score) ? repo.score.maintenance : undefined}
+                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.Maintenance}`)}
+                />
+
+                <BadgeCell
+                  value={!isUndefined(repo.score) ? repo.score.testing : undefined}
+                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.Testing}`)}
                 />
 
                 <BadgeCell

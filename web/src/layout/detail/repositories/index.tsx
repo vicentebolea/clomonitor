@@ -169,11 +169,33 @@ const RepositoriesList = (props: Props) => {
                   <Row
                     repoName={repo.name}
                     reportId={repo.report.report_id}
-                    name={ScoreType.Project}
-                    label="Project"
-                    data={repo.report.data.project}
-                    icon={CATEGORY_ICONS[ScoreType.Project]}
-                    score={!isUndefined(repo.score) ? repo.score.project : undefined}
+                    name={ScoreType.CodeVulnerabilities}
+                    label="Code Vulnerabilities"
+                    data={repo.report.data.code_vulnerabilities}
+                    icon={CATEGORY_ICONS[ScoreType.CodeVulnerabilities]}
+                    score={!isUndefined(repo.score) ? repo.score.code_vulnerabilities : undefined}
+                    referenceUrl="https://scorecard.dev/"
+                    getAnchorLink={getAnchorLink}
+                  />
+                  <Row
+                    repoName={repo.name}
+                    reportId={repo.report.report_id}
+                    name={ScoreType.Maintenance}
+                    label="Maintenance"
+                    data={repo.report.data.maintenance}
+                    icon={CATEGORY_ICONS[ScoreType.Maintenance]}
+                    score={!isUndefined(repo.score) ? repo.score.maintenance : undefined}
+                    referenceUrl="https://scorecard.dev/"
+                    getAnchorLink={getAnchorLink}
+                  />
+                  <Row
+                    repoName={repo.name}
+                    reportId={repo.report.report_id}
+                    name={ScoreType.Testing}
+                    label="Continuous Testing"
+                    data={repo.report.data.testing}
+                    icon={CATEGORY_ICONS[ScoreType.Testing]}
+                    score={!isUndefined(repo.score) ? repo.score.testing : undefined}
                     referenceUrl="https://scorecard.dev/"
                     getAnchorLink={getAnchorLink}
                   />
@@ -181,7 +203,7 @@ const RepositoriesList = (props: Props) => {
                     repoName={repo.name}
                     reportId={repo.report.report_id}
                     name={ScoreType.Source}
-                    label="Source"
+                    label="Source Risk"
                     data={repo.report.data.source}
                     icon={CATEGORY_ICONS[ScoreType.Source]}
                     score={!isUndefined(repo.score) ? repo.score.source : undefined}
@@ -192,7 +214,7 @@ const RepositoriesList = (props: Props) => {
                     repoName={repo.name}
                     reportId={repo.report.report_id}
                     name={ScoreType.Build}
-                    label="Build"
+                    label="Build Risk"
                     data={repo.report.data.build}
                     icon={CATEGORY_ICONS[ScoreType.Build]}
                     score={!isUndefined(repo.score) ? repo.score.build : undefined}

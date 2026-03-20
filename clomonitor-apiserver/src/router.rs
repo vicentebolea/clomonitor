@@ -527,8 +527,8 @@ mod tests {
             .returning(|_: &str, _: &str| {
                 let score = Score {
                     global: 80.0,
-                    documentation: Some(80.0),
-                    license: Some(50.0),
+                    code_vulnerabilities: Some(80.0),
+                    maintenance: Some(50.0),
                     ..Score::default()
                 };
                 Box::pin(future::ready(Ok(Some(score))))
@@ -624,68 +624,46 @@ mod tests {
                     check_sets: vec![CheckSet::Code],
                     score: Some(Score {
                         global: 99.999_999_999_999_99,
-                        global_weight: 5,
-                        documentation: Some(100.0),
-                        documentation_weight: Some(1),
-                        license: Some(100.0),
-                        license_weight: Some(1),
-                        best_practices: Some(100.0),
-                        best_practices_weight: Some(1),
-                        security: Some(100.0),
-                        security_weight: Some(1),
-                        legal: Some(100.0),
-                        legal_weight: Some(1),
+                        global_weight: 18,
+                        code_vulnerabilities: Some(100.0),
+                        code_vulnerabilities_weight: Some(1),
+                        maintenance: Some(100.0),
+                        maintenance_weight: Some(5),
+                        testing: Some(100.0),
+                        testing_weight: Some(3),
+                        source: Some(100.0),
+                        source_weight: Some(5),
+                        build: Some(100.0),
+                        build_weight: Some(4),
                     }),
                     report: Some(Report {
-                        documentation: Documentation {
-                            adopters: Some(CheckOutput::passed()),
-                            code_of_conduct: Some(CheckOutput::passed()),
-                            contributing: Some(CheckOutput::passed()),
-                            changelog: Some(CheckOutput::passed()),
-                            governance: Some(CheckOutput::passed()),
-                            maintainers: Some(CheckOutput::passed()),
-                            readme: Some(CheckOutput::passed()),
-                            roadmap: Some(CheckOutput::passed()),
-                            summary_table: Some(CheckOutput::passed()),
-                            website: Some(CheckOutput::passed()),
+                        code_vulnerabilities: CodeVulnerabilities {
+                            vulnerabilities: Some(CheckOutput::passed()),
                         },
-                        license: License {
-                            license_approved: Some(CheckOutput::passed()),
-                            license_scanning: Some(
-                                CheckOutput::passed()
-                                    .url(Some("https://license-scanning.url".to_string())),
-                            ),
-                            license_spdx_id: Some(
-                                CheckOutput::passed().value(Some("Apache-2.0".to_string())),
-                            ),
-                        },
-                        best_practices: BestPractices {
-                            analytics: Some(CheckOutput::passed()),
-                            artifacthub_badge: Some(CheckOutput::exempt()),
-                            cla: Some(CheckOutput::passed()),
-                            community_meeting: Some(CheckOutput::passed()),
-                            dco: Some(CheckOutput::passed()),
-                            github_discussions: Some(CheckOutput::passed()),
-                            openssf_badge: Some(CheckOutput::passed()),
-                            openssf_scorecard_badge: Some(CheckOutput::passed()),
-                            recent_release: Some(CheckOutput::passed()),
-                            slack_presence: Some(CheckOutput::passed()),
-                        },
-                        security: Security {
-                            binary_artifacts: Some(CheckOutput::passed()),
-                            code_review: Some(CheckOutput::passed()),
-                            dangerous_workflow: Some(CheckOutput::passed()),
-                            dependencies_policy: Some(CheckOutput::passed()),
+                        maintenance: Maintenance {
                             dependency_update_tool: Some(CheckOutput::passed()),
                             maintained: Some(CheckOutput::passed()),
-                            sbom: Some(CheckOutput::passed()),
-                            security_insights: Some(CheckOutput::passed()),
-                            security_policy: Some(CheckOutput::passed()),
-                            signed_releases: Some(CheckOutput::passed()),
-                            token_permissions: Some(CheckOutput::passed()),
+                            security_policy_sc: Some(CheckOutput::passed()),
+                            license_sc: Some(CheckOutput::passed()),
+                            cii_best_practices: Some(CheckOutput::passed()),
                         },
-                        legal: Legal {
-                            trademark_disclaimer: Some(CheckOutput::passed()),
+                        testing: ContinuousTesting {
+                            ci_tests: Some(CheckOutput::passed()),
+                            fuzzing: Some(CheckOutput::passed()),
+                            sast: Some(CheckOutput::passed()),
+                        },
+                        source: SourceRisk {
+                            binary_artifacts: Some(CheckOutput::passed()),
+                            branch_protection: Some(CheckOutput::passed()),
+                            dangerous_workflow: Some(CheckOutput::passed()),
+                            code_review: Some(CheckOutput::passed()),
+                            contributors_sc: Some(CheckOutput::passed()),
+                        },
+                        build: BuildRisk {
+                            pinned_dependencies: Some(CheckOutput::passed()),
+                            token_permissions: Some(CheckOutput::passed()),
+                            packaging: Some(CheckOutput::passed()),
+                            signed_releases: Some(CheckOutput::passed()),
                         },
                     }),
                 };

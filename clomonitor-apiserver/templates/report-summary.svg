@@ -1,8 +1,8 @@
 <svg
   class="{{ theme }}"
   width="450"
-  height="185"
-  viewBox="0 0 450 185"
+  height="210"
+  viewBox="0 0 450 210"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
 >
@@ -233,7 +233,7 @@
     x="0"
     y="50"
     class="bg"
-    height="135"
+    height="160"
     width="450"
   />
 
@@ -249,7 +249,7 @@
     </g>
   </g>
 
-  <!-- Project -->
+  <!-- Code Vulnerabilities -->
 
   <g transform="translate(135, 60)">
     <g>
@@ -257,26 +257,76 @@
 
       <g class="title" transform="translate(5, 0)">
         <svg y="3" class="icon" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
         </svg>
-        <text x="16" y="13">Project</text>
+        <text x="16" y="13">Code Vuln.</text>
       </g>
 
       <rect x="135" y="0" class="valueBg" height="18" width="30" stroke-opacity="1" />
       <g class="value">
-        <text x="150" y="13" text-anchor="middle">{{ score.project|to_string }}</text>
+        <text x="150" y="13" text-anchor="middle">{{ score.code_vulnerabilities|to_string }}</text>
       </g>
 
       <g transform="translate(175, 7)">
         <rect x="0" y="0" height="4" width="106" class="barWrapper" />
-        <rect x="0" y="0" height="4" width="{{ score.project|rs_section_score_width }}" class="bar-{{ score.project|rating_opt }}" />
+        <rect x="0" y="0" height="4" width="{{ score.code_vulnerabilities|rs_section_score_width }}" class="bar-{{ score.code_vulnerabilities|rating_opt }}" />
       </g>
     </g>
   </g>
 
-  <!-- Source -->
+  <!-- Maintenance -->
 
   <g transform="translate(135, 86)">
+    <g>
+      <rect x="0" y="0" class="barBg" height="18" width="290" stroke-opacity="1" />
+
+      <g class="title" transform="translate(5, 0)">
+        <svg y="3" class="icon" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.43 12.98c.04-.32.07-.64.07-.98 0-.34-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98 0 .33.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+        </svg>
+        <text x="16" y="13">Maintenance</text>
+      </g>
+
+      <rect x="135" y="0" class="valueBg" height="18" width="30" stroke-opacity="1" />
+      <g class="value">
+        <text x="150" y="13" text-anchor="middle">{{ score.maintenance|to_string }}</text>
+      </g>
+
+      <g transform="translate(175, 7)">
+        <rect x="0" y="0" height="4" width="106" class="barWrapper" />
+        <rect x="0" y="0" height="4" width="{{ score.maintenance|rs_section_score_width }}" class="bar-{{ score.maintenance|rating_opt }}" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Continuous Testing -->
+
+  <g transform="translate(135, 112)">
+    <g>
+      <rect x="0" y="0" class="barBg" height="18" width="290" stroke-opacity="1" />
+
+      <g class="title" transform="translate(5, 0)">
+        <svg y="3" class="empty-icon" fill="none" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <text x="16" y="13">Testing</text>
+      </g>
+
+      <rect x="135" y="0" class="valueBg" height="18" width="30" stroke-opacity="1" />
+      <g class="value">
+        <text x="150" y="13" text-anchor="middle">{{ score.testing|to_string }}</text>
+      </g>
+
+      <g transform="translate(175, 7)">
+        <rect x="0" y="0" height="4" width="106" class="barWrapper" />
+        <rect x="0" y="0" height="4" width="{{ score.testing|rs_section_score_width }}" class="bar-{{ score.testing|rating_opt }}" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Source Risk -->
+
+  <g transform="translate(135, 138)">
     <g>
       <rect x="0" y="0" class="barBg" height="18" width="290" stroke-opacity="1" />
 
@@ -284,7 +334,7 @@
         <svg y="3" class="empty-icon" fill="none" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
-        <text x="16" y="13">Source</text>
+        <text x="16" y="13">Source Risk</text>
       </g>
 
       <rect x="135" y="0" class="valueBg" height="18" width="30" stroke-opacity="1" />
@@ -299,9 +349,9 @@
     </g>
   </g>
 
-  <!-- Build -->
+  <!-- Build Risk -->
 
-  <g transform="translate(135, 112)">
+  <g transform="translate(135, 164)">
     <g>
       <rect x="0" y="0" class="barBg" height="18" width="290" stroke-opacity="1" />
 
@@ -309,7 +359,7 @@
         <svg y="3" class="icon" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
           <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
         </svg>
-        <text x="16" y="13">Build</text>
+        <text x="16" y="13">Build Risk</text>
       </g>
 
       <rect x="135" y="0" class="valueBg" height="18" width="30" stroke-opacity="1" />

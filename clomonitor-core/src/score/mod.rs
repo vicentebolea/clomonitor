@@ -9,20 +9,27 @@ pub struct Score {
     pub global_weight: usize,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub project: Option<f64>,
+    pub code_vulnerabilities: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code_vulnerabilities_weight: Option<usize>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub project_weight: Option<usize>,
+    pub maintenance: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maintenance_weight: Option<usize>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub testing: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub testing_weight: Option<usize>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<f64>,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_weight: Option<usize>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub build: Option<f64>,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub build_weight: Option<usize>,
 }
@@ -46,23 +53,32 @@ impl Score {
 pub fn calculate(report: &Report) -> Score {
     let mut score = Score::default();
 
-    // Sections
-    (score.project, score.project_weight) = calculate_section(
-        &report.project.available(),
-        &report.project.passed_or_exempt(),
-    );
-    (score.source, score.source_weight) = calculate_section(
-        &report.source.available(),
-        &report.source.passed_or_exempt(),
-    );
-    (score.build, score.build_weight) = calculate_section(
-        &report.build.available(),
-        &report.build.passed_or_exempt(),
-    );
+    (score.code_vulnerabilities, score.code_vulnerabilities_weight) =
+        calculate_section(&report.code_vulnerabilities.check_scores());
+    (score.maintenance, score.maintenance_weight) =
+        calculate_section(&report.maintenance.check_scores());
+    (score.testing, score.testing_weight) =
+        calculate_section(&report.testing.check_scores());
+    (score.source, score.source_weight) =
+        calculate_section(&report.source.check_scores());
+    (score.build, score.build_weight) =
+        calculate_section(&report.build.check_scores());
 
     // Global
-    let sections_scores = &[score.project, score.source, score.build];
-    let sections_weights = &[score.project_weight, score.source_weight, score.build_weight];
+    let sections_scores = &[
+        score.code_vulnerabilities,
+        score.maintenance,
+        score.testing,
+        score.source,
+        score.build,
+    ];
+    let sections_weights = &[
+        score.code_vulnerabilities_weight,
+        score.maintenance_weight,
+        score.testing_weight,
+        score.source_weight,
+        score.build_weight,
+    ];
     score.global_weight = sections_weights
         .iter()
         .fold(0, |gw, sw| gw + sw.unwrap_or_default());
@@ -77,24 +93,18 @@ pub fn calculate(report: &Report) -> Score {
     score
 }
 
-/// Calculate score and weight for a report's section from the checks provided.
-fn calculate_section(
-    checks_available: &[CheckId],
-    checks_passed_or_exempt: &[CheckId],
-) -> (Option<f64>, Option<usize>) {
-    // Calculate section weight
-    let weight = checks_available
+/// Calculate score and weight for a report's section.
+/// Each entry is (CheckId, normalized_score) where normalized_score is 0.0-1.0.
+fn calculate_section(check_scores: &[(CheckId, f64)]) -> (Option<f64>, Option<usize>) {
+    let weight = check_scores
         .iter()
-        .fold(0, |weight, check_id| weight + CHECKS[check_id].weight);
+        .fold(0, |weight, (check_id, _)| weight + CHECKS[check_id].weight);
     if weight == 0 {
         return (None, None);
     }
-
-    // Calculate section score
-    let score = checks_passed_or_exempt.iter().fold(0.0, |score, check_id| {
-        score + CHECKS[check_id].weight as f64 / weight as f64 * 100.0
+    let score = check_scores.iter().fold(0.0, |score, (check_id, normalized)| {
+        score + CHECKS[check_id].weight as f64 / weight as f64 * normalized * 100.0
     });
-
     (Some(score), Some(weight))
 }
 
@@ -102,12 +112,16 @@ fn calculate_section(
 #[must_use]
 pub fn merge(scores: &[Score]) -> Score {
     let mut global_weights_sum = 0;
-    let mut project_weights_sum = 0;
+    let mut code_vuln_weights_sum = 0;
+    let mut maintenance_weights_sum = 0;
+    let mut testing_weights_sum = 0;
     let mut source_weights_sum = 0;
     let mut build_weights_sum = 0;
     for score in scores {
         global_weights_sum += score.global_weight;
-        project_weights_sum += score.project_weight.unwrap_or_default();
+        code_vuln_weights_sum += score.code_vulnerabilities_weight.unwrap_or_default();
+        maintenance_weights_sum += score.maintenance_weight.unwrap_or_default();
+        testing_weights_sum += score.testing_weight.unwrap_or_default();
         source_weights_sum += score.source_weight.unwrap_or_default();
         build_weights_sum += score.build_weight.unwrap_or_default();
     }
@@ -125,10 +139,20 @@ pub fn merge(scores: &[Score]) -> Score {
     let mut m = Score::default();
     for s in scores {
         m.global += s.global * (s.global_weight as f64 / global_weights_sum as f64);
-        m.project = merge(
-            m.project,
-            s.project,
-            s.project_weight.unwrap_or_default() as f64 / project_weights_sum as f64,
+        m.code_vulnerabilities = merge(
+            m.code_vulnerabilities,
+            s.code_vulnerabilities,
+            s.code_vulnerabilities_weight.unwrap_or_default() as f64 / code_vuln_weights_sum as f64,
+        );
+        m.maintenance = merge(
+            m.maintenance,
+            s.maintenance,
+            s.maintenance_weight.unwrap_or_default() as f64 / maintenance_weights_sum as f64,
+        );
+        m.testing = merge(
+            m.testing,
+            s.testing,
+            s.testing_weight.unwrap_or_default() as f64 / testing_weights_sum as f64,
         );
         m.source = merge(
             m.source,
@@ -198,90 +222,91 @@ mod tests {
         assert_eq!(rating(20.0), 'd');
     }
 
-    #[test]
-    fn calculate_report_with_all_checks_passed_got_max_score() {
-        // project(5) + source(5) + build(9) = 19 checks, each weight 1 = global_weight 19
-        assert_eq!(
-            calculate(&Report {
-                project: Holistic {
-                    maintained: Some(CheckOutput::passed()),
-                    contributors_sc: Some(CheckOutput::passed()),
-                    cii_best_practices: Some(CheckOutput::passed()),
-                    security_policy_sc: Some(CheckOutput::passed()),
-                    license_sc: Some(CheckOutput::passed()),
-                },
-                source: SourceCode {
-                    code_review: Some(CheckOutput::passed()),
-                    binary_artifacts: Some(CheckOutput::passed()),
-                    dangerous_workflow: Some(CheckOutput::passed()),
-                    sast: Some(CheckOutput::passed()),
-                    vulnerabilities: Some(CheckOutput::passed()),
-                },
-                build: BuildProcess {
-                    branch_protection: Some(CheckOutput::passed()),
-                    ci_tests: Some(CheckOutput::passed()),
-                    dependency_update_tool: Some(CheckOutput::passed()),
-                    fuzzing: Some(CheckOutput::passed()),
-                    pinned_dependencies: Some(CheckOutput::passed()),
-                    signed_releases: Some(CheckOutput::passed()),
-                    token_permissions: Some(CheckOutput::passed()),
-                    packaging: Some(CheckOutput::passed()),
-                    sbom_sc: Some(CheckOutput::passed()),
-                },
-            }),
-            Score {
-                global: 100.0,
-                global_weight: 19,
-                project: Some(100.0),
-                project_weight: Some(5),
-                source: Some(100.0),
-                source_weight: Some(5),
-                build: Some(100.0),
-                build_weight: Some(9),
-            }
-        );
+    fn check_with_sc_score(sc_score: f64) -> CheckOutput {
+        CheckOutput {
+            scorecard_score: Some(sc_score),
+            passed: sc_score > 5.0,
+            ..CheckOutput::default()
+        }
     }
 
     #[test]
-    fn calculate_report_with_all_checks_non_passed_got_min_score() {
-        assert_eq!(
-            calculate(&Report {
-                project: Holistic {
-                    maintained: Some(CheckOutput::not_passed()),
-                    contributors_sc: Some(CheckOutput::not_passed()),
-                    cii_best_practices: Some(CheckOutput::not_passed()),
-                    security_policy_sc: Some(CheckOutput::not_passed()),
-                    license_sc: Some(CheckOutput::not_passed()),
-                },
-                source: SourceCode {
-                    code_review: Some(CheckOutput::not_passed()),
-                    binary_artifacts: Some(CheckOutput::not_passed()),
-                    dangerous_workflow: Some(CheckOutput::not_passed()),
-                    sast: Some(CheckOutput::not_passed()),
-                    vulnerabilities: Some(CheckOutput::not_passed()),
-                },
-                build: BuildProcess {
-                    branch_protection: Some(CheckOutput::not_passed()),
-                    ci_tests: Some(CheckOutput::not_passed()),
-                    dependency_update_tool: Some(CheckOutput::not_passed()),
-                    fuzzing: Some(CheckOutput::not_passed()),
-                    pinned_dependencies: Some(CheckOutput::not_passed()),
-                    signed_releases: Some(CheckOutput::not_passed()),
-                    token_permissions: Some(CheckOutput::not_passed()),
-                    packaging: Some(CheckOutput::not_passed()),
-                    sbom_sc: Some(CheckOutput::not_passed()),
-                },
-            }),
-            Score {
-                global: 0.0,
-                global_weight: 19,
-                project: Some(0.0),
-                project_weight: Some(5),
-                source: Some(0.0),
-                source_weight: Some(5),
-                build: Some(0.0),
-                build_weight: Some(9),
-            }
-        );
+    fn calculate_report_all_checks_perfect() {
+        let check = || Some(check_with_sc_score(10.0));
+        let result = calculate(&Report {
+            code_vulnerabilities: CodeVulnerabilities {
+                vulnerabilities: check(),
+            },
+            maintenance: Maintenance {
+                dependency_update_tool: check(),
+                maintained: check(),
+                security_policy_sc: check(),
+                license_sc: check(),
+                cii_best_practices: check(),
+            },
+            testing: ContinuousTesting {
+                ci_tests: check(),
+                fuzzing: check(),
+                sast: check(),
+            },
+            source: SourceRisk {
+                binary_artifacts: check(),
+                branch_protection: check(),
+                dangerous_workflow: check(),
+                code_review: check(),
+                contributors_sc: check(),
+            },
+            build: BuildRisk {
+                pinned_dependencies: check(),
+                token_permissions: check(),
+                packaging: check(),
+                signed_releases: check(),
+            },
+        });
+        assert!((result.global - 100.0).abs() < 1e-6);
+        assert!((result.code_vulnerabilities.unwrap() - 100.0).abs() < 1e-6);
+        assert!((result.maintenance.unwrap() - 100.0).abs() < 1e-6);
+        assert!((result.testing.unwrap() - 100.0).abs() < 1e-6);
+        assert!((result.source.unwrap() - 100.0).abs() < 1e-6);
+        assert!((result.build.unwrap() - 100.0).abs() < 1e-6);
+        // weights: 1 + 5 + 3 + 5 + 4 = 18
+        assert_eq!(result.global_weight, 18);
+    }
+
+    #[test]
+    fn calculate_report_all_checks_zero() {
+        let check = || Some(check_with_sc_score(0.0));
+        let result = calculate(&Report {
+            code_vulnerabilities: CodeVulnerabilities {
+                vulnerabilities: check(),
+            },
+            maintenance: Maintenance {
+                dependency_update_tool: check(),
+                maintained: check(),
+                security_policy_sc: check(),
+                license_sc: check(),
+                cii_best_practices: check(),
+            },
+            testing: ContinuousTesting {
+                ci_tests: check(),
+                fuzzing: check(),
+                sast: check(),
+            },
+            source: SourceRisk {
+                binary_artifacts: check(),
+                branch_protection: check(),
+                dangerous_workflow: check(),
+                code_review: check(),
+                contributors_sc: check(),
+            },
+            build: BuildRisk {
+                pinned_dependencies: check(),
+                token_permissions: check(),
+                packaging: check(),
+                signed_releases: check(),
+            },
+        });
+        assert!((result.global - 0.0).abs() < 1e-6);
+        assert_eq!(result.global_weight, 18);
     }
 }

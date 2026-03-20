@@ -11,46 +11,57 @@
 
 ### Checks passed per category
 
-| Category |                              Score |
-| :------- | ----------------------------------: |
-| Project  |  {{ category_score(score.project) }} |
-| Source   |   {{ category_score(score.source) }} |
-| Build    |    {{ category_score(score.build) }} |
+| Category             |                                       Score |
+| :------------------- | ------------------------------------------: |
+| Code Vulnerabilities | {{ category_score(score.code_vulnerabilities) }} |
+| Maintenance          |        {{ category_score(score.maintenance) }} |
+| Continuous Testing   |           {{ category_score(score.testing) }} |
+| Source Risk          |             {{ category_score(score.source) }} |
+| Build Risk           |              {{ category_score(score.build) }} |
 
 ## Checks
 
-{% if let Some(value) = score.project -%}
-### Project [{{ value.round() }}%]
+{% if let Some(value) = score.code_vulnerabilities -%}
+### Code Vulnerabilities [{{ value.round() }}%]
 
-  {{ check("maintained-from-openssf-scorecard", "Maintained", report.project.maintained) -}}
-  {{ check("contributors-from-openssf-scorecard", "Contributors", report.project.contributors_sc) -}}
-  {{ check("cii-best-practices-from-openssf-scorecard", "CII Best Practices", report.project.cii_best_practices) -}}
-  {{ check("security-policy-from-openssf-scorecard", "Security policy", report.project.security_policy_sc) -}}
-  {{ check("license-from-openssf-scorecard", "License", report.project.license_sc) -}}
+  {{ check("vulnerabilities-from-openssf-scorecard", "Vulnerabilities", report.code_vulnerabilities.vulnerabilities) -}}
+
+{%- endif %}
+{%- if let Some(value) = score.maintenance %}
+### Maintenance [{{ value.round() }}%]
+
+  {{ check("dependency-update-tool-from-openssf-scorecard", "Dependency update tool", report.maintenance.dependency_update_tool) -}}
+  {{ check("maintained-from-openssf-scorecard", "Maintained", report.maintenance.maintained) -}}
+  {{ check("security-policy-from-openssf-scorecard", "Security policy", report.maintenance.security_policy_sc) -}}
+  {{ check("license-from-openssf-scorecard", "License", report.maintenance.license_sc) -}}
+  {{ check("cii-best-practices-from-openssf-scorecard", "CII Best Practices", report.maintenance.cii_best_practices) -}}
+
+{%- endif %}
+{%- if let Some(value) = score.testing %}
+### Continuous Testing [{{ value.round() }}%]
+
+  {{ check("ci-tests-from-openssf-scorecard", "CI tests", report.testing.ci_tests) -}}
+  {{ check("fuzzing-from-openssf-scorecard", "Fuzzing", report.testing.fuzzing) -}}
+  {{ check("sast-from-openssf-scorecard", "SAST", report.testing.sast) -}}
 
 {%- endif %}
 {%- if let Some(value) = score.source %}
-### Source [{{ value.round() }}%]
+### Source Risk [{{ value.round() }}%]
 
-  {{ check("code-review-from-openssf-scorecard", "Code review", report.source.code_review) -}}
   {{ check("binary-artifacts-from-openssf-scorecard", "Binary artifacts", report.source.binary_artifacts) -}}
+  {{ check("branch-protection-from-openssf-scorecard", "Branch protection", report.source.branch_protection) -}}
   {{ check("dangerous-workflow-from-openssf-scorecard", "Dangerous workflow", report.source.dangerous_workflow) -}}
-  {{ check("sast-from-openssf-scorecard", "SAST", report.source.sast) -}}
-  {{ check("vulnerabilities-from-openssf-scorecard", "Vulnerabilities", report.source.vulnerabilities) -}}
+  {{ check("code-review-from-openssf-scorecard", "Code review", report.source.code_review) -}}
+  {{ check("contributors-from-openssf-scorecard", "Contributors", report.source.contributors_sc) -}}
 
 {%- endif %}
 {%- if let Some(value) = score.build %}
-### Build [{{ value.round() }}%]
+### Build Risk [{{ value.round() }}%]
 
-  {{ check("branch-protection-from-openssf-scorecard", "Branch protection", report.build.branch_protection) -}}
-  {{ check("ci-tests-from-openssf-scorecard", "CI tests", report.build.ci_tests) -}}
-  {{ check("dependency-update-tool-from-openssf-scorecard", "Dependency update tool", report.build.dependency_update_tool) -}}
-  {{ check("fuzzing-from-openssf-scorecard", "Fuzzing", report.build.fuzzing) -}}
   {{ check("pinned-dependencies-from-openssf-scorecard", "Pinned dependencies", report.build.pinned_dependencies) -}}
-  {{ check("signed-releases-from-openssf-scorecard", "Signed releases", report.build.signed_releases) -}}
   {{ check("token-permissions-from-openssf-scorecard", "Token permissions", report.build.token_permissions) -}}
   {{ check("packaging-from-openssf-scorecard", "Packaging", report.build.packaging) -}}
-  {{ check("sbom-from-openssf-scorecard", "SBOM", report.build.sbom_sc) -}}
+  {{ check("signed-releases-from-openssf-scorecard", "Signed releases", report.build.signed_releases) -}}
 
 {%- endif %}
 For more information about each check, see the [OpenSSF Scorecard documentation](https://scorecard.dev/).

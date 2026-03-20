@@ -111,30 +111,33 @@ impl Linter for CoreLinter {
 
         // Run OpenSSF Scorecard checks and build report
         let mut report = Report {
-            project: Holistic {
-                maintained: run!(maintained, &ci),
-                contributors_sc: run!(contributors_sc, &ci),
-                cii_best_practices: run!(cii_best_practices, &ci),
-                security_policy_sc: run!(security_policy_sc, &ci),
-                license_sc: run!(license_sc, &ci),
-            },
-            source: SourceCode {
-                code_review: run!(code_review, &ci),
-                binary_artifacts: run!(binary_artifacts, &ci),
-                dangerous_workflow: run!(dangerous_workflow, &ci),
-                sast: run!(sast, &ci),
+            code_vulnerabilities: CodeVulnerabilities {
                 vulnerabilities: run!(vulnerabilities, &ci),
             },
-            build: BuildProcess {
-                branch_protection: run!(branch_protection, &ci),
-                ci_tests: run!(ci_tests, &ci),
+            maintenance: Maintenance {
                 dependency_update_tool: run!(dependency_update_tool, &ci),
+                maintained: run!(maintained, &ci),
+                security_policy_sc: run!(security_policy_sc, &ci),
+                license_sc: run!(license_sc, &ci),
+                cii_best_practices: run!(cii_best_practices, &ci),
+            },
+            testing: ContinuousTesting {
+                ci_tests: run!(ci_tests, &ci),
                 fuzzing: run!(fuzzing, &ci),
+                sast: run!(sast, &ci),
+            },
+            source: SourceRisk {
+                binary_artifacts: run!(binary_artifacts, &ci),
+                branch_protection: run!(branch_protection, &ci),
+                dangerous_workflow: run!(dangerous_workflow, &ci),
+                code_review: run!(code_review, &ci),
+                contributors_sc: run!(contributors_sc, &ci),
+            },
+            build: BuildRisk {
                 pinned_dependencies: run!(pinned_dependencies, &ci),
-                signed_releases: run!(signed_releases, &ci),
                 token_permissions: run!(token_permissions, &ci),
                 packaging: run!(packaging, &ci),
-                sbom_sc: run!(sbom_sc, &ci),
+                signed_releases: run!(signed_releases, &ci),
             },
         };
         report.apply_exemptions();

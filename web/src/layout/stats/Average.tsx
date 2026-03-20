@@ -14,18 +14,30 @@ const Average = (props: Props) => {
       <div className={`card-header fw-bold text-uppercase text-center ${styles.cardHeader}`}>{props.title}</div>
       <div className="card-body pt-2 pt-md-3 px-3 px-md-4 pb-0">
         <ProgressBar
-          title="Documentation"
-          icon={CATEGORY_ICONS[ScoreType.Documentation]}
-          value={props.data.documentation}
+          title="Code Vulnerabilities"
+          icon={CATEGORY_ICONS[ScoreType.CodeVulnerabilities]}
+          value={props.data.code_vulnerabilities}
         />
-        <ProgressBar title="License" icon={CATEGORY_ICONS[ScoreType.License]} value={props.data.license} />
         <ProgressBar
-          title="Best Practices"
-          icon={CATEGORY_ICONS[ScoreType.BestPractices]}
-          value={props.data.best_practices}
+          title="Maintenance"
+          icon={CATEGORY_ICONS[ScoreType.Maintenance]}
+          value={props.data.maintenance}
         />
-        <ProgressBar title="Security" icon={CATEGORY_ICONS[ScoreType.Security]} value={props.data.security} />
-        <ProgressBar title="Legal" icon={CATEGORY_ICONS[ScoreType.Legal]} value={props.data.legal} />
+        <ProgressBar
+          title="Continuous Testing"
+          icon={CATEGORY_ICONS[ScoreType.Testing]}
+          value={props.data.testing}
+        />
+        <ProgressBar
+          title="Source Risk"
+          icon={CATEGORY_ICONS[ScoreType.Source]}
+          value={props.data.source}
+        />
+        <ProgressBar
+          title="Build Risk"
+          icon={CATEGORY_ICONS[ScoreType.Build]}
+          value={props.data.build}
+        />
       </div>
     </>
   );

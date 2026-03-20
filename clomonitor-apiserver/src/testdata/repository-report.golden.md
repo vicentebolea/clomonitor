@@ -9,67 +9,48 @@
 
 ### Checks passed per category
 
-| Category       |                                           Score |
-| :------------- | ----------------------------------------------: |
-| Documentation  |  100% |
-| License        |        100% |
-| Best Practices | 100% |
-| Security       |       100% |
-| Legal          |          100% |
+| Category             |                                       Score |
+| :------------------- | ------------------------------------------: |
+| Code Vulnerabilities | 100% |
+| Maintenance          |        100% |
+| Continuous Testing   |           100% |
+| Source Risk          |             100% |
+| Build Risk           |              100% |
 
 ## Checks
 
-### Documentation [100%]
+### Code Vulnerabilities [100%]
 
-  - [x] Adopters ([_docs_](https://clomonitor.io/docs/topics/checks/#adopters))
-  - [x] Changelog ([_docs_](https://clomonitor.io/docs/topics/checks/#changelog))
-  - [x] Code of conduct ([_docs_](https://clomonitor.io/docs/topics/checks/#code-of-conduct))
-  - [x] Contributing ([_docs_](https://clomonitor.io/docs/topics/checks/#contributing))
-  - [x] Governance ([_docs_](https://clomonitor.io/docs/topics/checks/#governance))
-  - [x] Maintainers ([_docs_](https://clomonitor.io/docs/topics/checks/#maintainers))
-  - [x] Readme ([_docs_](https://clomonitor.io/docs/topics/checks/#readme))
-  - [x] Roadmap ([_docs_](https://clomonitor.io/docs/topics/checks/#roadmap))
-  - [x] Summary Table ([_docs_](https://clomonitor.io/docs/topics/checks/#summary-table))
-  - [x] Website ([_docs_](https://clomonitor.io/docs/topics/checks/#website))
+  - [x] Vulnerabilities ([_docs_](https://scorecard.dev/))
   
-### License [100%]
+### Maintenance [100%]
 
-  - [x] Apache-2.0 ([_docs_](https://clomonitor.io/docs/topics/checks/#spdx-id))
-  - [x] Approved license ([_docs_](https://clomonitor.io/docs/topics/checks/#approved-license))
-  - [x] [License scanning](https://license-scanning.url) ([_docs_](https://clomonitor.io/docs/topics/checks/#license-scanning))
+  - [x] Dependency update tool ([_docs_](https://scorecard.dev/))
+  - [x] Maintained ([_docs_](https://scorecard.dev/))
+  - [x] Security policy ([_docs_](https://scorecard.dev/))
+  - [x] License ([_docs_](https://scorecard.dev/))
+  - [x] CII Best Practices ([_docs_](https://scorecard.dev/))
   
-### Best Practices [100%]
+### Continuous Testing [100%]
 
-  - [x] Analytics ([_docs_](https://clomonitor.io/docs/topics/checks/#analytics))
-  - [x] Artifact Hub badge ([_docs_](https://clomonitor.io/docs/topics/checks/#artifact-hub-badge)) `EXEMPT`
-  - [x] Contributor License Agreement ([_docs_](https://clomonitor.io/docs/topics/checks/#contributor-license-agreement))
-  - [x] Community meeting ([_docs_](https://clomonitor.io/docs/topics/checks/#community-meeting))
-  - [x] Developer Certificate of Origin ([_docs_](https://clomonitor.io/docs/topics/checks/#developer-certificate-of-origin))
-  - [x] Github discussions ([_docs_](https://clomonitor.io/docs/topics/checks/#github-discussions))
-  - [x] OpenSSF best practices badge ([_docs_](https://clomonitor.io/docs/topics/checks/#openssf-badge))
-  - [x] OpenSSF Scorecard badge ([_docs_](https://clomonitor.io/docs/topics/checks/#openssf-scorecard-badge))
-  - [x] Recent release ([_docs_](https://clomonitor.io/docs/topics/checks/#recent-release))
-  - [x] Slack precense ([_docs_](https://clomonitor.io/docs/topics/checks/#slack-presence))
+  - [x] CI tests ([_docs_](https://scorecard.dev/))
+  - [x] Fuzzing ([_docs_](https://scorecard.dev/))
+  - [x] SAST ([_docs_](https://scorecard.dev/))
   
-### Security [100%]
+### Source Risk [100%]
 
-  - [x] Binary artifacts ([_docs_](https://clomonitor.io/docs/topics/checks/#binary-artifacts-from-openssf-scorecard))
-  - [x] Code review ([_docs_](https://clomonitor.io/docs/topics/checks/#code-review-from-openssf-scorecard))
-  - [x] Dangerous workflow ([_docs_](https://clomonitor.io/docs/topics/checks/#dangerous-workflow-from-openssf-scorecard))
-  - [x] Dependencies policy ([_docs_](https://clomonitor.io/docs/topics/checks/#dependencies-policy))
-  - [x] Dependency update tool ([_docs_](https://clomonitor.io/docs/topics/checks/#dependency-update-tool-from-openssf-scorecard))
-  - [x] Maintained ([_docs_](https://clomonitor.io/docs/topics/checks/#maintained-from-openssf-scorecard))
-  - [x] Software bill of materials (SBOM) ([_docs_](https://clomonitor.io/docs/topics/checks/#software-bill-of-materials-sbom))
-  - [x] Security insights ([_docs_](https://clomonitor.io/docs/topics/checks/#security-insights))
-  - [x] Security policy ([_docs_](https://clomonitor.io/docs/topics/checks/#security-policy))
-  - [x] Signed releases ([_docs_](https://clomonitor.io/docs/topics/checks/#signed-releases-from-openssf-scorecard))
-  - [x] Token permissions ([_docs_](https://clomonitor.io/docs/topics/checks/#token-permissions-from-openssf-scorecard))
+  - [x] Binary artifacts ([_docs_](https://scorecard.dev/))
+  - [x] Branch protection ([_docs_](https://scorecard.dev/))
+  - [x] Dangerous workflow ([_docs_](https://scorecard.dev/))
+  - [x] Code review ([_docs_](https://scorecard.dev/))
+  - [x] Contributors ([_docs_](https://scorecard.dev/))
   
-### Legal [100%]
+### Build Risk [100%]
 
-  - [x] Trademark disclaimer ([_docs_](https://clomonitor.io/docs/topics/checks/#trademark-disclaimer))
+  - [x] Pinned dependencies ([_docs_](https://scorecard.dev/))
+  - [x] Token permissions ([_docs_](https://scorecard.dev/))
+  - [x] Packaging ([_docs_](https://scorecard.dev/))
+  - [x] Signed releases ([_docs_](https://scorecard.dev/))
   
-For more information about the checks sets available and how each of the checks work, please see the [CLOMonitor's documentation](https://clomonitor.io/docs/topics/checks/).
-
-
+For more information about each check, see the [OpenSSF Scorecard documentation](https://scorecard.dev/).
 
