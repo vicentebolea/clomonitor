@@ -5,9 +5,9 @@ use super::{CheckOutput, check::CheckId, checks::*};
 /// Linter report.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Report {
-    pub project: Project,
-    pub source: Source,
-    pub build: Build,
+    pub project: Holistic,
+    pub source: SourceCode,
+    pub build: BuildProcess,
 }
 
 impl Report {
@@ -18,19 +18,19 @@ impl Report {
 
 /// Project section: holistic security practices (OpenSSF Scorecard).
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Project {
+pub struct Holistic {
     pub maintained: Option<CheckOutput>,
 }
 
 #[rustfmt::skip]
 section_impl!(
-    Project,
+    Holistic,
     maintained
 );
 
 /// Source section: source code risk assessment (OpenSSF Scorecard).
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Source {
+pub struct SourceCode {
     pub code_review: Option<CheckOutput>,
     pub dangerous_workflow: Option<CheckOutput>,
     pub token_permissions: Option<CheckOutput>,
@@ -38,7 +38,7 @@ pub struct Source {
 
 #[rustfmt::skip]
 section_impl!(
-    Source,
+    SourceCode,
     code_review,
     dangerous_workflow,
     token_permissions
@@ -46,7 +46,7 @@ section_impl!(
 
 /// Build section: build process risk assessment (OpenSSF Scorecard).
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Build {
+pub struct BuildProcess {
     pub binary_artifacts: Option<CheckOutput>,
     pub dependency_update_tool: Option<CheckOutput>,
     pub signed_releases: Option<CheckOutput>,
@@ -54,7 +54,7 @@ pub struct Build {
 
 #[rustfmt::skip]
 section_impl!(
-    Build,
+    BuildProcess,
     binary_artifacts,
     dependency_update_tool,
     signed_releases

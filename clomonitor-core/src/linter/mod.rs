@@ -111,15 +111,15 @@ impl Linter for CoreLinter {
 
         // Run OpenSSF Scorecard checks and build report
         let mut report = Report {
-            project: Project {
+            project: Holistic {
                 maintained: run!(maintained, &ci),
             },
-            source: Source {
+            source: SourceCode {
                 code_review: run!(code_review, &ci),
                 dangerous_workflow: run!(dangerous_workflow, &ci),
                 token_permissions: run!(token_permissions, &ci),
             },
-            build: Build {
+            build: BuildProcess {
                 binary_artifacts: run!(binary_artifacts, &ci),
                 dependency_update_tool: run!(dependency_update_tool, &ci),
                 signed_releases: run!(signed_releases, &ci),

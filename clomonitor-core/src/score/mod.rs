@@ -204,15 +204,15 @@ mod tests {
         // + binary_artifacts(2) + dependency_update_tool(2) + signed_releases(2) = 15
         assert_eq!(
             calculate(&Report {
-                project: Project {
+                project: Holistic {
                     maintained: Some(CheckOutput::passed()),
                 },
-                source: Source {
+                source: SourceCode {
                     code_review: Some(CheckOutput::passed()),
                     dangerous_workflow: Some(CheckOutput::passed()),
                     token_permissions: Some(CheckOutput::passed()),
                 },
-                build: Build {
+                build: BuildProcess {
                     binary_artifacts: Some(CheckOutput::passed()),
                     dependency_update_tool: Some(CheckOutput::passed()),
                     signed_releases: Some(CheckOutput::passed()),
@@ -235,15 +235,15 @@ mod tests {
     fn calculate_report_with_all_checks_non_passed_got_min_score() {
         assert_eq!(
             calculate(&Report {
-                project: Project {
+                project: Holistic {
                     maintained: Some(CheckOutput::not_passed()),
                 },
-                source: Source {
+                source: SourceCode {
                     code_review: Some(CheckOutput::not_passed()),
                     dangerous_workflow: Some(CheckOutput::not_passed()),
                     token_permissions: Some(CheckOutput::not_passed()),
                 },
-                build: Build {
+                build: BuildProcess {
                     binary_artifacts: Some(CheckOutput::not_passed()),
                     dependency_update_tool: Some(CheckOutput::not_passed()),
                     signed_releases: Some(CheckOutput::not_passed()),
