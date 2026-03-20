@@ -113,17 +113,25 @@ macro_rules! section_impl {
         impl $section {
             /// Returns (CheckId, normalized_score 0.0-1.0) for each check that was run.
             pub(crate) fn check_scores(&self) -> Vec<(CheckId, f64)> {
+                use crate::linter::checks::CHECKS;
                 let mut scores = Vec::new();
                 $(
                 if let Some(ref output) = self.$field {
-                    let score = if output.exempt {
-                        1.0
-                    } else if let Some(sc_score) = output.scorecard_score {
-                        sc_score.max(0.0) / 10.0
+                    // Skip scorecard checks that failed to produce a score (e.g. token errors)
+                    // so one failing check doesn't zero out the whole section.
+                    let is_scorecard_check = CHECKS[$module::ID].scorecard_name.is_some();
+                    if !output.exempt && is_scorecard_check && output.scorecard_score.is_none() {
+                        // omit this check from scoring entirely
                     } else {
-                        if output.passed { 1.0 } else { 0.0 }
-                    };
-                    scores.push(($module::ID, score));
+                        let score = if output.exempt {
+                            1.0
+                        } else if let Some(sc_score) = output.scorecard_score {
+                            sc_score.max(0.0) / 10.0
+                        } else {
+                            if output.passed { 1.0 } else { 0.0 }
+                        };
+                        scores.push(($module::ID, score));
+                    }
                 }
                 )*
                 scores
