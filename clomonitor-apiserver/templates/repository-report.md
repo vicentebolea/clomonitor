@@ -11,77 +11,37 @@
 
 ### Checks passed per category
 
-| Category       |                                           Score |
-| :------------- | ----------------------------------------------: |
-| Documentation  |  {{ category_score(score.documentation) }} |
-| License        |        {{ category_score(score.license) }} |
-| Best Practices | {{ category_score(score.best_practices) }} |
-| Security       |       {{ category_score(score.security) }} |
-| Legal          |          {{ category_score(score.legal) }} |
+| Category |                              Score |
+| :------- | ----------------------------------: |
+| Project  |  {{ category_score(score.project) }} |
+| Source   |   {{ category_score(score.source) }} |
+| Build    |    {{ category_score(score.build) }} |
 
 ## Checks
 
-{% if let Some(value) = score.documentation -%}
-### Documentation [{{ value.round() }}%]
+{% if let Some(value) = score.project -%}
+### Project [{{ value.round() }}%]
 
-  {{ check("adopters", "Adopters", report.documentation.adopters) -}}
-  {{ check("changelog", "Changelog", report.documentation.changelog) -}}
-  {{ check("code-of-conduct", "Code of conduct", report.documentation.code_of_conduct) -}}
-  {{ check("contributing", "Contributing", report.documentation.contributing) -}}
-  {{ check("governance", "Governance", report.documentation.governance) -}}
-  {{ check("maintainers", "Maintainers", report.documentation.maintainers) -}}
-  {{ check("readme", "Readme", report.documentation.readme) -}}
-  {{ check("roadmap", "Roadmap", report.documentation.roadmap) -}}
-  {{ check("summary-table", "Summary Table", report.documentation.summary_table) -}}
-  {{ check("website", "Website", report.documentation.website) -}}
+  {{ check("maintained-from-openssf-scorecard", "Maintained", report.project.maintained) -}}
 
 {%- endif %}
-{%- if let Some(value) = score.license %}
-### License [{{ value.round() }}%]
+{%- if let Some(value) = score.source %}
+### Source [{{ value.round() }}%]
 
-  {{ license_spdx_id_check(report.license.license_spdx_id) -}}
-  {{ check("approved-license", "Approved license", report.license.license_approved) -}}
-  {{ check("license-scanning", "License scanning", report.license.license_scanning) -}}
-
-{%- endif %}
-{%- if let Some(value) = score.best_practices %}
-### Best Practices [{{ value.round() }}%]
-
-  {{ check("analytics", "Analytics", report.best_practices.analytics) -}}
-  {{ check("artifact-hub-badge", "Artifact Hub badge", report.best_practices.artifacthub_badge) -}}
-  {{ check("contributor-license-agreement", "Contributor License Agreement", report.best_practices.cla) -}}
-  {{ check("community-meeting", "Community meeting", report.best_practices.community_meeting) -}}
-  {{ check("developer-certificate-of-origin", "Developer Certificate of Origin", report.best_practices.dco) -}}
-  {{ check("github-discussions", "Github discussions", report.best_practices.github_discussions) -}}
-  {{ check("openssf-badge", "OpenSSF best practices badge", report.best_practices.openssf_badge) -}}
-  {{ check("openssf-scorecard-badge", "OpenSSF Scorecard badge", report.best_practices.openssf_scorecard_badge) -}}
-  {{ check("recent-release", "Recent release", report.best_practices.recent_release) -}}
-  {{ check("slack-presence", "Slack precense", report.best_practices.slack_presence) -}}
+  {{ check("code-review-from-openssf-scorecard", "Code review", report.source.code_review) -}}
+  {{ check("dangerous-workflow-from-openssf-scorecard", "Dangerous workflow", report.source.dangerous_workflow) -}}
+  {{ check("token-permissions-from-openssf-scorecard", "Token permissions", report.source.token_permissions) -}}
 
 {%- endif %}
-{%- if let Some(value) = score.security %}
-### Security [{{ value.round() }}%]
+{%- if let Some(value) = score.build %}
+### Build [{{ value.round() }}%]
 
-  {{ check("binary-artifacts-from-openssf-scorecard", "Binary artifacts", report.security.binary_artifacts) -}}
-  {{ check("code-review-from-openssf-scorecard", "Code review", report.security.code_review) -}}
-  {{ check("dangerous-workflow-from-openssf-scorecard", "Dangerous workflow", report.security.dangerous_workflow) -}}
-  {{ check("dependencies-policy", "Dependencies policy", report.security.dependencies_policy) -}}
-  {{ check("dependency-update-tool-from-openssf-scorecard", "Dependency update tool", report.security.dependency_update_tool) -}}
-  {{ check("maintained-from-openssf-scorecard", "Maintained", report.security.maintained) -}}
-  {{ check("software-bill-of-materials-sbom", "Software bill of materials (SBOM)", report.security.sbom) -}}
-  {{ check("security-insights", "Security insights", report.security.security_insights) -}}
-  {{ check("security-policy", "Security policy", report.security.security_policy) -}}
-  {{ check("signed-releases-from-openssf-scorecard", "Signed releases", report.security.signed_releases) -}}
-  {{ check("token-permissions-from-openssf-scorecard", "Token permissions", report.security.token_permissions) -}}
+  {{ check("binary-artifacts-from-openssf-scorecard", "Binary artifacts", report.build.binary_artifacts) -}}
+  {{ check("dependency-update-tool-from-openssf-scorecard", "Dependency update tool", report.build.dependency_update_tool) -}}
+  {{ check("signed-releases-from-openssf-scorecard", "Signed releases", report.build.signed_releases) -}}
 
 {%- endif %}
-{%- if let Some(value) = score.legal %}
-### Legal [{{ value.round() }}%]
-
-  {{ check("trademark-disclaimer", "Trademark disclaimer", report.legal.trademark_disclaimer) -}}
-
-{%- endif %}
-For more information about the checks sets available and how each of the checks work, please see the [CLOMonitor's documentation](https://clomonitor.io/docs/topics/checks/).
+For more information about each check, see the [OpenSSF Scorecard documentation](https://scorecard.dev/).
 
 {%- else %}
 
@@ -92,15 +52,7 @@ This repository hasn't been processed yet, please try again later.
   {%- if let Some(check_output) = option -%}
     - [{% if check_output.passed || check_output.exempt %}x{% else %} {% endif %}]
     {%- if let Some(link) = check_output.url %} [{{ display_name }}]({{ link }}) {% else %} {{ display_name }} {% endif -%}
-    ([_docs_](https://clomonitor.io/docs/topics/checks/#{{ doc_id }}))
-    {%- if check_output.exempt %} `EXEMPT`{%- endif %}
-    {%- if check_output.failed %} `CHECK FAILED`{%- endif %}
-  {% endif -%}
-{%- endmacro %}
-
-{% macro license_spdx_id_check(option) %}
-  {%- if let Some(check_output) = option -%}
-    - [{% if check_output.passed || check_output.exempt %}x{% else %} {% endif %}] {{ check_output.value.as_deref().unwrap_or("Not detected") }} ([_docs_](https://clomonitor.io/docs/topics/checks/#spdx-id))
+    ([_docs_](https://scorecard.dev/))
     {%- if check_output.exempt %} `EXEMPT`{%- endif %}
     {%- if check_output.failed %} `CHECK FAILED`{%- endif %}
   {% endif -%}
