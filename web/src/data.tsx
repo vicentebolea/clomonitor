@@ -283,11 +283,29 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     legend: <span>Whether the project has generated executable (binary) artifacts in the source repository</span>,
     reference: '/docs/topics/checks/#binary-artifacts-from-openssf-scorecard',
   },
+  [ReportOption.BranchProtection]: {
+    icon: <BiShieldQuarter />,
+    name: 'Branch protection',
+    legend: <span>Whether the project's default and release branches are protected with branch protection settings</span>,
+    reference: 'https://scorecard.dev/',
+  },
   [ReportOption.Changelog]: {
     icon: <CgFileDocument />,
     name: 'Changelog',
     legend: <span>A curated, chronologically ordered list of notable changes for each version</span>,
     reference: '/docs/topics/checks/#changelog',
+  },
+  [ReportOption.CiTests]: {
+    icon: <FaCheckDouble />,
+    name: 'CI tests',
+    legend: <span>Whether the project runs tests before pull requests are merged</span>,
+    reference: 'https://scorecard.dev/',
+  },
+  [ReportOption.CIIBestPractices]: {
+    icon: <BiMedal />,
+    name: 'CII Best Practices',
+    legend: <span>Whether the project has earned an OpenSSF Best Practices Badge at passing, silver, or gold level</span>,
+    reference: 'https://scorecard.dev/',
   },
   [ReportOption.CLA]: {
     icon: <FaFileContract />,
@@ -334,6 +352,12 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     ),
     reference: '/docs/topics/checks/#contributing',
   },
+  [ReportOption.Contributors]: {
+    icon: <IoIosPeople />,
+    name: 'Contributors',
+    legend: <span>Whether the project has recent contributors from multiple organizations</span>,
+    reference: 'https://scorecard.dev/',
+  },
   [ReportOption.DangerousWorkflow]: {
     icon: <FaExclamationTriangle />,
     name: 'Dangerous workflow',
@@ -363,6 +387,12 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     ),
     reference: '/docs/topics/checks/#developer-certificate-of-origin',
   },
+  [ReportOption.Fuzzing]: {
+    icon: <RiShieldStarLine />,
+    name: 'Fuzzing',
+    legend: <span>Whether the project uses fuzzing through OSS-Fuzz, ClusterFuzzLite, or language-specific functions</span>,
+    reference: 'https://scorecard.dev/',
+  },
   [ReportOption.GithubDiscussions]: {
     icon: <GoCommentDiscussion />,
     name: 'GitHub discussions',
@@ -374,6 +404,12 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     name: 'Governance',
     legend: <span>Document that explains how the governance and committer process works in the repository</span>,
     reference: '/docs/topics/checks/#governance',
+  },
+  [ReportOption.License]: {
+    icon: <FaBalanceScale />,
+    name: 'License',
+    legend: <span>Whether the project has published a license</span>,
+    reference: 'https://scorecard.dev/',
   },
   [ReportOption.LicenseScanning]: {
     icon: <GiStamper />,
@@ -422,6 +458,18 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     ),
     reference: '/docs/topics/checks/#openssf-scorecard-badge',
   },
+  [ReportOption.Packaging]: {
+    icon: <MdOutlineInventory />,
+    name: 'Packaging',
+    legend: <span>Whether the project is published as a package</span>,
+    reference: 'https://scorecard.dev/',
+  },
+  [ReportOption.PinnedDependencies]: {
+    icon: <FaRobot />,
+    name: 'Pinned dependencies',
+    legend: <span>Whether the project pins dependencies to specific hashes in build and release processes</span>,
+    reference: 'https://scorecard.dev/',
+  },
   [ReportOption.Readme]: {
     icon: <CgReadme />,
     name: 'Readme',
@@ -446,6 +494,12 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
       <span>Defines a high-level overview of the project's goals and deliverables ideally presented on a timeline</span>
     ),
     reference: '/docs/topics/checks/#roadmap',
+  },
+  [ReportOption.SAST]: {
+    icon: <HiOutlinePencilAlt />,
+    name: 'SAST',
+    legend: <span>Whether the project uses Static Application Security Testing</span>,
+    reference: 'https://scorecard.dev/',
   },
   [ReportOption.SBOM]: {
     icon: <MdOutlineInventory />,
@@ -528,11 +582,23 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     legend: <span>Projects sites should have the Linux Foundation trademark disclaimer</span>,
     reference: '/docs/topics/checks/#trademark-disclaimer',
   },
+  [ReportOption.Vulnerabilities]: {
+    icon: <FaExclamationTriangle />,
+    name: 'Vulnerabilities',
+    legend: <span>Whether the project has known vulnerabilities in its dependencies</span>,
+    reference: 'https://scorecard.dev/',
+  },
   [ReportOption.Website]: {
     icon: <BiWorld />,
     name: 'Website',
     legend: <span>A url that users can visit to learn more about your project</span>,
     reference: '/docs/topics/checks/#website',
+  },
+  [ReportOption.Webhooks]: {
+    icon: <BiLock />,
+    name: 'Webhooks',
+    legend: <span>Whether webhook configurations use secret-based authentication</span>,
+    reference: 'https://scorecard.dev/',
   },
 };
 
@@ -543,15 +609,29 @@ export type FoundationInfo = {
 };
 
 export const CHECKS_PER_CATEGORY: ChecksPerCategory = {
-  [ScoreType.Project]: [ReportOption.Maintained],
+  [ScoreType.Project]: [
+    ReportOption.Maintained,
+    ReportOption.Contributors,
+    ReportOption.CIIBestPractices,
+    ReportOption.SecurityPolicy,
+    ReportOption.License,
+  ],
   [ScoreType.Source]: [
     ReportOption.CodeReview,
+    ReportOption.BinaryArtifacts,
     ReportOption.DangerousWorkflow,
-    ReportOption.TokenPermissions,
+    ReportOption.SAST,
+    ReportOption.Vulnerabilities,
   ],
   [ScoreType.Build]: [
-    ReportOption.BinaryArtifacts,
+    ReportOption.BranchProtection,
+    ReportOption.CiTests,
     ReportOption.DependencyUpdateTool,
+    ReportOption.Fuzzing,
+    ReportOption.PinnedDependencies,
     ReportOption.SignedReleases,
+    ReportOption.TokenPermissions,
+    ReportOption.Packaging,
+    ReportOption.SBOM,
   ],
 };

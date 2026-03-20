@@ -200,33 +200,44 @@ mod tests {
 
     #[test]
     fn calculate_report_with_all_checks_passed_got_max_score() {
-        // maintained(3) + code_review(3) + dangerous_workflow(2) + token_permissions(1)
-        // + binary_artifacts(2) + dependency_update_tool(2) + signed_releases(2) = 15
+        // project(5) + source(5) + build(9) = 19 checks, each weight 1 = global_weight 19
         assert_eq!(
             calculate(&Report {
                 project: Holistic {
                     maintained: Some(CheckOutput::passed()),
+                    contributors_sc: Some(CheckOutput::passed()),
+                    cii_best_practices: Some(CheckOutput::passed()),
+                    security_policy_sc: Some(CheckOutput::passed()),
+                    license_sc: Some(CheckOutput::passed()),
                 },
                 source: SourceCode {
                     code_review: Some(CheckOutput::passed()),
+                    binary_artifacts: Some(CheckOutput::passed()),
                     dangerous_workflow: Some(CheckOutput::passed()),
-                    token_permissions: Some(CheckOutput::passed()),
+                    sast: Some(CheckOutput::passed()),
+                    vulnerabilities: Some(CheckOutput::passed()),
                 },
                 build: BuildProcess {
-                    binary_artifacts: Some(CheckOutput::passed()),
+                    branch_protection: Some(CheckOutput::passed()),
+                    ci_tests: Some(CheckOutput::passed()),
                     dependency_update_tool: Some(CheckOutput::passed()),
+                    fuzzing: Some(CheckOutput::passed()),
+                    pinned_dependencies: Some(CheckOutput::passed()),
                     signed_releases: Some(CheckOutput::passed()),
+                    token_permissions: Some(CheckOutput::passed()),
+                    packaging: Some(CheckOutput::passed()),
+                    sbom_sc: Some(CheckOutput::passed()),
                 },
             }),
             Score {
                 global: 100.0,
-                global_weight: 15,
+                global_weight: 19,
                 project: Some(100.0),
-                project_weight: Some(3),
+                project_weight: Some(5),
                 source: Some(100.0),
-                source_weight: Some(6),
+                source_weight: Some(5),
                 build: Some(100.0),
-                build_weight: Some(6),
+                build_weight: Some(9),
             }
         );
     }
@@ -237,27 +248,39 @@ mod tests {
             calculate(&Report {
                 project: Holistic {
                     maintained: Some(CheckOutput::not_passed()),
+                    contributors_sc: Some(CheckOutput::not_passed()),
+                    cii_best_practices: Some(CheckOutput::not_passed()),
+                    security_policy_sc: Some(CheckOutput::not_passed()),
+                    license_sc: Some(CheckOutput::not_passed()),
                 },
                 source: SourceCode {
                     code_review: Some(CheckOutput::not_passed()),
+                    binary_artifacts: Some(CheckOutput::not_passed()),
                     dangerous_workflow: Some(CheckOutput::not_passed()),
-                    token_permissions: Some(CheckOutput::not_passed()),
+                    sast: Some(CheckOutput::not_passed()),
+                    vulnerabilities: Some(CheckOutput::not_passed()),
                 },
                 build: BuildProcess {
-                    binary_artifacts: Some(CheckOutput::not_passed()),
+                    branch_protection: Some(CheckOutput::not_passed()),
+                    ci_tests: Some(CheckOutput::not_passed()),
                     dependency_update_tool: Some(CheckOutput::not_passed()),
+                    fuzzing: Some(CheckOutput::not_passed()),
+                    pinned_dependencies: Some(CheckOutput::not_passed()),
                     signed_releases: Some(CheckOutput::not_passed()),
+                    token_permissions: Some(CheckOutput::not_passed()),
+                    packaging: Some(CheckOutput::not_passed()),
+                    sbom_sc: Some(CheckOutput::not_passed()),
                 },
             }),
             Score {
                 global: 0.0,
-                global_weight: 15,
+                global_weight: 19,
                 project: Some(0.0),
-                project_weight: Some(3),
+                project_weight: Some(5),
                 source: Some(0.0),
-                source_weight: Some(6),
+                source_weight: Some(5),
                 build: Some(0.0),
-                build_weight: Some(6),
+                build_weight: Some(9),
             }
         );
     }

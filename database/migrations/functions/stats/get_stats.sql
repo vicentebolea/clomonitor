@@ -148,17 +148,29 @@ returns json as $$
         'repositories', json_build_object(
             'passing_check', json_build_object(
                 'project', json_build_object(
-                    'maintained', repositories_passing_check(p_foundation, 'project', 'maintained')
+                    'maintained', repositories_passing_check(p_foundation, 'project', 'maintained'),
+                    'contributors', repositories_passing_check(p_foundation, 'project', 'contributors'),
+                    'cii_best_practices', repositories_passing_check(p_foundation, 'project', 'cii_best_practices'),
+                    'security_policy', repositories_passing_check(p_foundation, 'project', 'security_policy'),
+                    'license', repositories_passing_check(p_foundation, 'project', 'license')
                 ),
                 'source', json_build_object(
                     'code_review', repositories_passing_check(p_foundation, 'source', 'code_review'),
+                    'binary_artifacts', repositories_passing_check(p_foundation, 'source', 'binary_artifacts'),
                     'dangerous_workflow', repositories_passing_check(p_foundation, 'source', 'dangerous_workflow'),
-                    'token_permissions', repositories_passing_check(p_foundation, 'source', 'token_permissions')
+                    'sast', repositories_passing_check(p_foundation, 'source', 'sast'),
+                    'vulnerabilities', repositories_passing_check(p_foundation, 'source', 'vulnerabilities')
                 ),
                 'build', json_build_object(
-                    'binary_artifacts', repositories_passing_check(p_foundation, 'build', 'binary_artifacts'),
+                    'branch_protection', repositories_passing_check(p_foundation, 'build', 'branch_protection'),
+                    'ci_tests', repositories_passing_check(p_foundation, 'build', 'ci_tests'),
                     'dependency_update_tool', repositories_passing_check(p_foundation, 'build', 'dependency_update_tool'),
-                    'signed_releases', repositories_passing_check(p_foundation, 'build', 'signed_releases')
+                    'fuzzing', repositories_passing_check(p_foundation, 'build', 'fuzzing'),
+                    'pinned_dependencies', repositories_passing_check(p_foundation, 'build', 'pinned_dependencies'),
+                    'signed_releases', repositories_passing_check(p_foundation, 'build', 'signed_releases'),
+                    'token_permissions', repositories_passing_check(p_foundation, 'build', 'token_permissions'),
+                    'packaging', repositories_passing_check(p_foundation, 'build', 'packaging'),
+                    'sbom', repositories_passing_check(p_foundation, 'build', 'sbom')
                 )
             )
         )

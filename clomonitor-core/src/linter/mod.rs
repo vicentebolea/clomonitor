@@ -113,16 +113,28 @@ impl Linter for CoreLinter {
         let mut report = Report {
             project: Holistic {
                 maintained: run!(maintained, &ci),
+                contributors_sc: run!(contributors_sc, &ci),
+                cii_best_practices: run!(cii_best_practices, &ci),
+                security_policy_sc: run!(security_policy_sc, &ci),
+                license_sc: run!(license_sc, &ci),
             },
             source: SourceCode {
                 code_review: run!(code_review, &ci),
+                binary_artifacts: run!(binary_artifacts, &ci),
                 dangerous_workflow: run!(dangerous_workflow, &ci),
-                token_permissions: run!(token_permissions, &ci),
+                sast: run!(sast, &ci),
+                vulnerabilities: run!(vulnerabilities, &ci),
             },
             build: BuildProcess {
-                binary_artifacts: run!(binary_artifacts, &ci),
+                branch_protection: run!(branch_protection, &ci),
+                ci_tests: run!(ci_tests, &ci),
                 dependency_update_tool: run!(dependency_update_tool, &ci),
+                fuzzing: run!(fuzzing, &ci),
+                pinned_dependencies: run!(pinned_dependencies, &ci),
                 signed_releases: run!(signed_releases, &ci),
+                token_permissions: run!(token_permissions, &ci),
+                packaging: run!(packaging, &ci),
+                sbom_sc: run!(sbom_sc, &ci),
             },
         };
         report.apply_exemptions();

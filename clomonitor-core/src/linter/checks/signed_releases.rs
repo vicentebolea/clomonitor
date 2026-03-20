@@ -11,7 +11,7 @@ use super::datasource::scorecard;
 pub(crate) const ID: CheckId = "signed_releases";
 
 /// Check score weight.
-pub(crate) const WEIGHT: usize = 2;
+pub(crate) const WEIGHT: usize = 1;
 
 /// Check sets this check belongs to.
 pub(crate) const CHECK_SETS: [CheckSet; 1] = [CheckSet::Code];

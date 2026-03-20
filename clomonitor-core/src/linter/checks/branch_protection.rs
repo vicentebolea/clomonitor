@@ -8,7 +8,7 @@ use crate::linter::{
 use super::datasource::scorecard;
 
 /// Check identifier.
-pub(crate) const ID: CheckId = "dependency_update_tool";
+pub(crate) const ID: CheckId = "branch_protection";
 
 /// Check score weight.
 pub(crate) const WEIGHT: usize = 1;
