@@ -82,13 +82,15 @@ pub fn calculate(report: &Report) -> Score {
     score.global_weight = sections_weights
         .iter()
         .fold(0, |gw, sw| gw + sw.unwrap_or_default());
-    score.global = sections_scores
-        .iter()
-        .zip(sections_weights.iter())
-        .fold(0.0, |gs, (ss, sw)| {
-            let k = sw.unwrap_or_default() as f64 / score.global_weight as f64;
-            gs + ss.unwrap_or_default() * k
-        });
+    if score.global_weight > 0 {
+        score.global = sections_scores
+            .iter()
+            .zip(sections_weights.iter())
+            .fold(0.0, |gs, (ss, sw)| {
+                let k = sw.unwrap_or_default() as f64 / score.global_weight as f64;
+                gs + ss.unwrap_or_default() * k
+            });
+    }
 
     score
 }

@@ -191,8 +191,8 @@ impl PgDB {
             .await?
             .iter()
             .filter_map(|row| {
-                let score: Option<Json<Score>> = row.get("score");
-                score.map(|Json(score)| score)
+                let score: Result<Option<Json<Score>>, _> = row.try_get("score");
+                score.ok().flatten().map(|Json(score)| score)
             })
             .collect();
 
